@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
 // Set up first page
-const firstPage = props => {
+const FirstPage = props => {
 
   //Navigation from page 1 to page 2
   const navigateToPageTwo = () => {
@@ -23,7 +23,7 @@ const firstPage = props => {
 };
 
 // Set up the second page
-const secondPage = props => {
+const SecondPage = props => {
 
   //Navigation from page 2 to page 3
   const navigateToPageThree = () => {
@@ -41,7 +41,7 @@ const secondPage = props => {
 };
 
 // Set up the third page
-const thirdPage = props => {
+const ThirdPage = props => {
 
   //Navigation from page 3 to page 4
   const navigateToPageFour = () => {
@@ -59,7 +59,7 @@ const thirdPage = props => {
 };
 
 // Set up the fourth page
-const fourthPage = () => {
+const FourthPage = () => {
   return (
     <View style={styles.container}>
       <Text>Now on the fourth and final page</Text>
@@ -74,10 +74,10 @@ const App = () => {
   return (
     <NavigationContainer>
       <Pages.Navigator>
-        <Pages.Screen name='firstPage' component={firstPage} />
-        <Pages.Screen name='secondPage' component={secondPage} />
-        <Pages.Screen name='thirdPage' component={thirdPage} />
-        <Pages.Screen name='fourthPage' component={fourthPage} />
+        <Pages.Screen name='firstPage' component={FirstPage} />
+        <Pages.Screen name='secondPage' component={SecondPage} />
+        <Pages.Screen name='thirdPage' component={ThirdPage} />
+        <Pages.Screen name='fourthPage' component={FourthPage} />
       </Pages.Navigator>
     </NavigationContainer>
   );
