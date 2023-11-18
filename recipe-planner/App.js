@@ -1,84 +1,73 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, TouchableHighlight} from 'react-native';
 // Importing navigation components
 import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-// Set up first page
-const FirstPage = props => {
-
-  //Navigation from page 1 to page 2
-  const navigateToPageTwo = () => {
-    props.navigation.navigate('secondPage');
-  };
-
+// Set up first screen
+const MyRecipesScreen = props => {
+  
   return (
     <View style={styles.container}>
       <Text>This is the first page</Text>
-      <TouchableHighlight onPress={navigateToPageTwo} style={styles.button}>
-        <Text>Press to go to page 2</Text>
-      </TouchableHighlight>
     </View>
   );
 };
 
-// Set up the second page
-const SecondPage = props => {
-
-  //Navigation from page 2 to page 3
-  const navigateToPageThree = () => {
-    props.navigation.navigate('thirdPage');
-  };
+// Set up the second screen
+const RecipeFinderScreen = props => {
 
   return (
     <View style={styles.container}>
       <Text>You on the the second page</Text>
-      <TouchableHighlight onPress={navigateToPageThree} style={styles.button}>
-        <Text>Press to go to page 3</Text>
-      </TouchableHighlight>
     </View>
   );
 };
 
-// Set up the third page
+// Set up the third screen
 const ThirdPage = props => {
-
-  //Navigation from page 3 to page 4
-  const navigateToPageFour = () => {
-    props.navigation.navigate('fourthPage');
-  };
 
   return (
     <View style={styles.container}>
       <Text>Currently the third page</Text>
-      <TouchableHighlight onPress={navigateToPageFour} style={styles.button}>
-        <Text>Press to go to page 4</Text>
-      </TouchableHighlight>
-    </View>
-  );
-};
-
-// Set up the fourth page
-const FourthPage = () => {
-  return (
-    <View style={styles.container}>
-      <Text>Now on the fourth and final page</Text>
     </View>
   );
 };
 
 const App = () => {
-  // Create the stack of pages 
-  const Pages = createStackNavigator();
+  // Create the tabs 
+  const Tabs = createBottomTabNavigator();
 
   return (
     <NavigationContainer>
-      <Pages.Navigator>
-        <Pages.Screen name='firstPage' component={FirstPage} />
-        <Pages.Screen name='secondPage' component={SecondPage} />
-        <Pages.Screen name='thirdPage' component={ThirdPage} />
-        <Pages.Screen name='fourthPage' component={FourthPage} />
-      </Pages.Navigator>
+      <Tabs.Navigator
+        screenOptions={({route}) => ({
+          tabBarIcon: ({color, size}) => {
+
+            // Set the icons for each tab based on the tab name
+            const icons = {
+              'My Recipes': 'pot-mix',
+              'Recipe Finder': 'search-web',
+              'thirdPage': 'cup'
+            };
+
+            // Retrieve icons from the MaterialCommunityIcons pack
+            return (
+              <MaterialCommunityIcons
+                name={icons[route.name]}
+                color={color}
+                size={size}
+              />
+            );
+          },
+        })}
+      >
+        <Tabs.Screen name='My Recipes' component={MyRecipesScreen} />
+        <Tabs.Screen name='Recipe Finder' component={RecipeFinderScreen} />
+        <Tabs.Screen name='thirdPage' component={ThirdPage} />
+      </Tabs.Navigator>
     </NavigationContainer>
   );
 };
