@@ -6,35 +6,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
-// Set up first screen
-const MyRecipesScreen = props => {
-  
-  return (
-    <View style={styles.container}>
-      <Text>This is the first page</Text>
-    </View>
-  );
-};
+// Import screens from custom class components
+import RecipeSearch from './src/RecipeSearch/RecipeSearch';
+import SearchResults from './src/SearchResults/SearchResults';
+import MyRecipes from './src/MyRecipes/MyRecipes';
+import MyDietaryPreferences from './src/MyDietaryPreferences/MyDietaryPreferences';
 
-// Set up the second screen
-const RecipeFinderScreen = props => {
-
-  return (
-    <View style={styles.container}>
-      <Text>You on the the second page</Text>
-    </View>
-  );
-};
-
-// Set up the third screen
-const ThirdPage = props => {
-
-  return (
-    <View style={styles.container}>
-      <Text>Currently the third page</Text>
-    </View>
-  );
-};
 
 const App = () => {
   // Create the tabs 
@@ -50,7 +27,8 @@ const App = () => {
             const icons = {
               'My Recipes': 'pot-mix',
               'Recipe Finder': 'search-web',
-              'thirdPage': 'cup'
+              'Search Results': 'cup',
+              'My Dietary Preferences': 'food-variant'
             };
 
             // Retrieve icons from the MaterialCommunityIcons pack
@@ -64,9 +42,10 @@ const App = () => {
           },
         })}
       >
-        <Tabs.Screen name='My Recipes' component={MyRecipesScreen} />
-        <Tabs.Screen name='Recipe Finder' component={RecipeFinderScreen} />
-        <Tabs.Screen name='thirdPage' component={ThirdPage} />
+        <Tabs.Screen name='My Recipes' component={MyRecipes} />
+        <Tabs.Screen name='Recipe Finder' component={RecipeSearch} />
+        <Tabs.Screen name='Search Results' component={SearchResults} />
+        <Tabs.Screen name='My Dietary Preferences' component={MyDietaryPreferences} />
       </Tabs.Navigator>
     </NavigationContainer>
   );
