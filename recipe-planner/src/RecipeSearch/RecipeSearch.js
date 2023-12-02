@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 
 class RecipeSearch extends React.Component {
   state = {
+    type: '',
     protein: '',
     starch: '',
     vegetables: '',
@@ -16,6 +17,7 @@ class RecipeSearch extends React.Component {
   search = () => {
     if (this.state.protein === '' && this.state.starch === '') alert('Please enter at least a protein or starch')
     this.setState({
+      type: '',
       protein: '',
       starch: '',
       vegetables: '',
@@ -27,6 +29,13 @@ class RecipeSearch extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.fields}>Dish type</Text>
+        <TextInput
+          placeholder='Stew, casserole, barbecue, etc.'
+          onChangeText={val => this.onInputTextChange('type', val)}
+          style={styles.input}
+          value={this.state.type}
+        />
         <Text style={styles.fields}>Protein</Text>
         <TextInput
           placeholder='Chicken, beef, pork, etc.'

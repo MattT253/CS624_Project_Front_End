@@ -6,50 +6,118 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
+
 // Import screens from custom class components
+import LoginScreen from './src/LoginScreen/LoginScreen';
 import RecipeSearch from './src/RecipeSearch/RecipeSearch';
 import SearchResults from './src/SearchResults/SearchResults';
-import MyRecipes from './src/MyRecipes/MyRecipes';
 import MyDietaryPreferences from './src/MyDietaryPreferences/MyDietaryPreferences';
 
+import MyRecipes from './src/MyRecipes/MyRecipes';
+import Recipe from './src/MyRecipes/Recipe';
 
-const App = () => {
-  // Create the tabs 
-  const Tabs = createBottomTabNavigator();
 
-  return (
-    <NavigationContainer>
-      <Tabs.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({color, size}) => {
+import ManuallyAddRecipe from './src/SearchResults/ManuallyAddRecipe'
 
-            // Set the icons for each tab based on the tab name
-            const icons = {
-              'My Recipes': 'pot-mix',
-              'Recipe Finder': 'search-web',
-              'Search Results': 'cup',
-              'My Dietary Preferences': 'food-variant'
-            };
 
-            // Retrieve icons from the MaterialCommunityIcons pack
-            return (
-              <MaterialCommunityIcons
-                name={icons[route.name]}
-                color={color}
-                size={size}
-              />
-            );
-          },
-        })}
-      >
-        <Tabs.Screen name='My Recipes' component={MyRecipes} />
-        <Tabs.Screen name='Recipe Finder' component={RecipeSearch} />
-        <Tabs.Screen name='Search Results' component={SearchResults} />
-        <Tabs.Screen name='My Dietary Preferences' component={MyDietaryPreferences} />
-      </Tabs.Navigator>
-    </NavigationContainer>
-  );
-};
+// Create the tabs and stack 
+const Tabs = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+
+const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmI4ZTVmNDliOGM3OGE0NWRmNjcxNiIsImlhdCI6MTcwMTU0NzYxNSwiZXhwIjoxNzA0MTM5NjE1fQ._xsjem9p6ncsFFhmWExjWxQcMLM7aM5GAYitLZEFeqc'
+
+// Create the stack navigator on the My Recipes screen that allows the user to view individual recipes, pass this as a component to the tab navigator below
+function RecipesStackScreen ({route}){
+    return (
+      <Stack.Navigator screenOptions={{
+        headerStyle: {
+          backgroundColor: '#aabbcc'
+        },
+        headerTintColor: '#ffffff'
+      }}>
+      <Stack.Screen name="My Saved Recipes" component={MyRecipes} initialParams={{
+        userToken: route.params.userToken,
+        myRecipes: route.params.myRecipes}} />
+      <Stack.Screen name="Recipe" component={Recipe} initialParams={{
+        userToken: route.params.userToken,
+        myRecipes: route.params.myRecipes,
+        deleteSavedRecipe: route.params.deleteSavedRecipe}}/>
+      </Stack.Navigator>
+    );
+}
+
+class App extends React.Component {
+
+
+  state = {
+    path: 'https://624api.azurewebsites.net/',
+    userToken: '',
+    myRecipes: [],
+    searchedRecipes: []
+  }
+
+  saveToMyRecipes = (recipe) => {
+    const recipes = this.state.myRecipes
+    recipes.push(recipe)
+    this.setState({recipes})
+  }
+
+  deleteSavedRecipe = (recipe) => {
+    const recipes = this.state.myRecipes
+    recipes.pop(recipe)
+    this.setState({recipes})
+  }
+
+  addRecipeToSearchList = (recipe) => {
+    const recipes = this.state.searchedRecipes
+    recipes.push(recipe)
+    this.setState({recipes})
+  }
+
+  render () {
+    return (
+      <NavigationContainer>
+        <Tabs.Navigator
+          screenOptions={({route}) => ({
+            tabBarIcon: ({color, size}) => {
+
+              // Set the icons for each tab based on the tab name
+              const icons = {
+                'Log in': 'login',
+                'My Recipes': 'pot-mix',
+                'Recipe Finder': 'search-web',
+                'Search Results': 'cup',
+                'My Dietary Preferences': 'food-variant'
+              };
+
+              // Retrieve icons from the MaterialCommunityIcons pack
+              return (
+                <MaterialCommunityIcons
+                  name={icons[route.name]}
+                  color={color}
+                  size={size} 
+                />
+              );
+            },
+          })}
+        >
+          <Tabs.Screen name='Log in' component={LoginScreen} initialParams={{userToken: this.state.userToken, path: this.state.path}} />
+          <Tabs.Screen name='My Recipes' component={RecipesStackScreen} initialParams={{userToken: this.state.userToken, deleteSavedRecipe: this.deleteSavedRecipe, myRecipes: this.state.myRecipes}} />
+          <Tabs.Screen name='Recipe Finder' component={RecipeSearch} initialParams={{userToken: this.state.userToken, addRecipeToSearchList: this.addRecipeToSearchList}} />
+          <Tabs.Screen name='Search Results' component={SearchResults} initialParams={{userToken: this.state.userToken, saveToMyRecipes: this.saveToMyRecipes, searchedRecipes: this.state.searchedRecipes}} />
+          <Tabs.Screen name='My Dietary Preferences' component={MyDietaryPreferences} initialParams={{userToken: this.state.userToken}} />
+          <Tabs.Screen name='test add recipe' component={ManuallyAddRecipe} initialParams={{userToken: this.state.userToken, saveToMyRecipes: this.saveToMyRecipes}} />
+        </Tabs.Navigator>
+      </NavigationContainer>
+    );
+  }
+}
 
 export default App;
 

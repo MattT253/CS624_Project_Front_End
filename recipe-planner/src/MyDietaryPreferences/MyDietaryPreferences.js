@@ -1,4 +1,4 @@
-// SearchResults tab
+// MyDietaryPreferences tab
 import React from 'react'
 import { View, ScrollView, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 //import uuidV4 from 'uuid/v4'
@@ -35,6 +35,33 @@ class MyDietaryPreferences extends React.Component {
       }
 
       updatePreferences = async () => {
+
+        try {
+          response = await fetch(this.props.route.params.path + 'users/preferences', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({
+                  "preferences": {
+                    "diets": ["vegan", "gluten-free"],
+                    "intolerances": ["dairy", "peanut"],
+                    "cuisine": ["Italian", "Mexican"],
+                    "excludeCuisine": ["Chinese"],
+                    "equipment": ["oven", "blender"],
+                    "includeIngredients": ["tomato", "basil"],
+                    "excludeIngredients": ["shrimp", "pork"],
+                }
+              })
+            }
+          );
+          json = await response.json();
+          console.log(json);
+    
+        } catch (error) {
+          console.error('Could not load dietary preferences', error);
+        }
         // This should call the back end and update the user preferences asynchronously
         // const response = await 
       }
