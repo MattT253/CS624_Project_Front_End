@@ -1,108 +1,268 @@
-// RecipeSearch tab
-import React from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-//import uuidV4 from 'uuid/v4'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
-class RecipeSearch extends React.Component {
-  state = {
-    type: '',
-    protein: '',
-    starch: '',
-    vegetables: '',
-    additional_ingredients: ''
-  }
-  onInputTextChange = (key, value) => {
-    this.setState({ [key]: value })
-  }
-  search = () => {
-    if (this.state.protein === '' && this.state.starch === '') alert('Please enter at least a protein or starch')
-    this.setState({
-      type: '',
-      protein: '',
-      starch: '',
-      vegetables: '',
-      additional_ingredients: ''
-    }, () => {
-      this.props.navigation.navigate('Search Results')
-    })
-  }
-  render() {
-    return (
+const RecipeSearch = (props) => {
+  const allTypes = [
+    "none",
+    "main course",
+    "side dish",
+    "dessert",
+    "appetizer",
+    "salad",
+    "bread",
+    "breakfast",
+    "soup",
+    "beverage",
+    "sauce",
+    "marinade",
+    "fingerfood",
+    "snack",
+    "drink",
+  ];
+  const allProteins = [
+    "none",
+    "chicken",
+    "beef",
+    "pork",
+    "fish",
+    "tofu",
+    "beans",
+    "lentils",
+    "peas",
+    "eggs",
+    "nuts",
+    "seeds",
+  ];
+  const allStarches = [
+    "none",
+    "rice",
+    "potatoes",
+    "flour",
+    "bread",
+    "pasta",
+    "oats",
+    "quinoa",
+    "corn",
+    "tortillas",
+  ];
+  const allVegetables = [
+    "none",
+    "carrots",
+    "onions",
+    "lettuce",
+    "tomatoes",
+    "spinach",
+    "kale",
+    "broccoli",
+    "cauliflower",
+    "peppers",
+    "mushrooms",
+  ];
+
+  const [types, setTypes] = useState([]);
+  const [proteins, setProteins] = useState([]);
+  const [starches, setStarches] = useState([]);
+  const [vegetables, setVegetables] = useState([]);
+  const [additionalIngredients, setAdditionalIngredients] = useState([]);
+
+  const addToStateArray = (setter, value) => {
+    setter((prevArray) => [...prevArray, value]);
+    console.log({});
+  };
+  const removeFromStateArray = (setter, index) => {
+    setter((prevArray) => prevArray.filter((_, i) => i !== index));
+  };
+  const logStateVariables = () => {
+    console.log({
+      types,
+      proteins,
+      starches,
+      vegetables,
+      additionalIngredients,
+    });
+  };
+  const fetchRecipes = async () => {
+    let allIngredients = [
+      ...proteins,
+      ...starches,
+      ...vegetables,
+      ...additionalIngredients,
+    ];
+    let includeIngredients = allIngredients.join(",");
+    let queryParams = new URLSearchParams({
+      includeIngredients: includeIngredients,
+      type: types.join(","),
+    });
+
+    const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?${queryParams.toString()}`;
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "edc1cf53c9msh509f6e4a610f77dp1e03aajsnb5e9e035ff19",
+        "X-RapidAPI-Host":
+          "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json(); // Assuming the response is in JSON format
+      console.log(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         <Text style={styles.fields}>Dish type</Text>
-        <TextInput
-          placeholder='Stew, casserole, barbecue, etc.'
-          onChangeText={val => this.onInputTextChange('type', val)}
-          style={styles.input}
-          value={this.state.type}
-        />
+        <Picker
+          selectedValue={types[types.length - 1]}
+          onValueChange={(itemValue) => addToStateArray(setTypes, itemValue)}
+          style={styles.picker}
+        >
+          {allTypes.map((type, index) => (
+            <Picker.Item key={index} label={type} value={type} />
+          ))}
+        </Picker>
+        <View style={styles.buttonsContainer}>
+          {types.map((type, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.button}
+              onPress={() => removeFromStateArray(setTypes, index)}
+            >
+              <Text style={styles.buttonText}>{type}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <Text style={styles.fields}>Protein</Text>
-        <TextInput
-          placeholder='Chicken, beef, pork, etc.'
-          onChangeText={val => this.onInputTextChange('protein', val)}
-          style={styles.input}
-          value={this.state.protein}
-        />
+        <Picker
+          selectedValue={proteins[proteins.length - 1]}
+          onValueChange={(itemValue) => addToStateArray(setProteins, itemValue)}
+          style={styles.picker}
+        >
+          {allProteins.map((protein, index) => (
+            <Picker.Item key={index} label={protein} value={protein} />
+          ))}
+        </Picker>
+        <View style={styles.buttonsContainer}>
+          {proteins.map((protein, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.button}
+              onPress={() => removeFromStateArray(setProteins, index)}
+            >
+              <Text style={styles.buttonText}>{protein}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <Text style={styles.fields}>Starch</Text>
-        <TextInput
-          placeholder='Rice, potatoes, flour, etc.'
-          onChangeText={val => this.onInputTextChange('starch', val)}
-          style={styles.input}
-          value={this.state.starch}
-        />
+        <Picker
+          selectedValue={starches[starches.length - 1]}
+          onValueChange={(itemValue) => addToStateArray(setStarches, itemValue)}
+          style={styles.picker}
+        >
+          {allStarches.map((starch, index) => (
+            <Picker.Item key={index} label={starch} value={starch} />
+          ))}
+        </Picker>
+        <View style={styles.buttonsContainer}>
+          {starches.map((starch, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.button}
+              onPress={() => removeFromStateArray(setStarches, index)}
+            >
+              <Text style={styles.buttonText}>{starch}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         <Text style={styles.fields}>Vegetables</Text>
-        <TextInput
-          placeholder='Carrots, onions, lettuce, etc.'
-          onChangeText={val => this.onInputTextChange('vegetables', val)}
-          style={styles.input}
-          value={this.state.vegetables}
-        />
-        <Text style={styles.fields}>Additional Ingredients</Text>
-        <TextInput
-          placeholder='Cheddar cheese, mayonnaise, mustard, etc.'
-          onChangeText={val => this.onInputTextChange('additional_ingredients', val)}
-          style={styles.input}
-          value={this.state.additional_ingredients}
-        />
-        <TouchableOpacity onPress={this.search}>
-          <View style={styles.button}>
-            <Text style={styles.buttonText}>Search</Text>
-          </View>
+        <Picker
+          selectedValue={vegetables[vegetables.length - 1]}
+          onValueChange={(itemValue) =>
+            addToStateArray(setVegetables, itemValue)
+          }
+          style={styles.picker}
+        >
+          {allVegetables.map((vegetable, index) => (
+            <Picker.Item key={index} label={vegetable} value={vegetable} />
+          ))}
+        </Picker>
+        <View style={styles.buttonsContainer}>
+          {vegetables.map((vegetable, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.button}
+              onPress={() => removeFromStateArray(setVegetables, index)}
+            >
+              <Text style={styles.buttonText}>{vegetable}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <TouchableOpacity style={styles.searchButton} onPress={fetchRecipes}>
+          <Text style={styles.buttonText}>Search</Text>
         </TouchableOpacity>
       </View>
-    )
-  }
-}
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-  button: {
-    height: 60,
-    backgroundColor: '#444444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 18
-  },
-  fields: {
-    color: '#ffffff',
-    fontSize: 20,
-    marginBottom: 5,
-    alignSelf: 'center'
+  scrollView: {
+    backgroundColor: "#5588bb",
   },
   container: {
-    backgroundColor: '#5588bb',
     flex: 1,
-    justifyContent: 'center'
+    padding: 20,
   },
-  input: {
+  fields: {
+    color: "#ffffff",
+    fontSize: 24,
     margin: 10,
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 20,
-    height: 40
-  }
-})
+    alignSelf: "center",
+  },
+  picker: {
+    backgroundColor: "#ffffff",
+    margin: 10,
+    borderRadius: 5,
+  },
+  button: {
+    height: 40, // Smaller buttons for a more professional look
+    backgroundColor: "#444444",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 5,
+    padding: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+  },
+  searchButton: {
+    backgroundColor: "#444444",
+    padding: 15,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+  },
+});
 
-export default RecipeSearch
+export default RecipeSearch;
