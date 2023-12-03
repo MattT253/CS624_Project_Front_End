@@ -1,147 +1,169 @@
 // Login tab
-import React from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import uuidV4 from 'uuid/v4'
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import uuidV4 from "uuid/v4";
+import TokenContext from "../Context/TokenContext";
 
 class LoginScreen extends React.Component {
-
+  static contextType = TokenContext;
   state = {
-    userName: '',
-    password: '',
-  }
+    userName: "",
+    password: "",
+    token: "",
+    preferences: [],
+    savedRecipes: [],
+  };
 
   onInputTextChange = (key, value) => {
-    this.setState({ [key]: value })
-  }
+    this.setState({ [key]: value });
+  };
 
   login = async () => {
     try {
-      var response = await fetch(this.props.route.params.path + 'users/login', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: '1234@example.com',
-            password: '1234',
-          })
-        }
-      );
+      var response = await fetch(this.props.route.params.path + "users/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "test@test.com",
+          password: "1234!@#$",
+        }),
+      });
       var json = await response.json();
       console.log(json);
 
       // The userToken state is stored in the App.js file and passed to each screen, set it here on login
-      this.props.route.params.setToken(json.token)
-      var token = json.token
-      
-      console.log(this.props.route.params);
+      //this.props.route.params.setToken(json.token);
+      //var token = json.token;
 
+      // Set token using context
+      //This does not happen immediately so if we are going to use
+      //this token in other calls in this component we need another
+      //copy
+      this.context.setToken(json.token);
+      this.token = json.token;
+
+      console.log(this.props.route.params);
     } catch (error) {
-      console.error('Could not login', error);
+      console.error("Could not login", error);
     }
 
     // This should also request the user's stored recipes and dietary preferences from the back end and store them in the appropriate states.
-    
+
     // Get dietary preferences from the back end
     try {
-      response = await fetch(this.props.route.params.path + 'users', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          }
-        }
-      );
+      console.log(`Dietary Preferences: ${this.token}`);
+      console.log(this.props.route.params.path);
+      response = await fetch(this.props.route.params.path + "users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.token,
+        },
+      });
       json = await response.json();
-      preferences = json.preferences
-
+      console.log(json);
+      this.preferences = json.preferences;
     } catch (error) {
-      console.error('Could not load dietary preferences', error);
+      console.error("Could not load dietary preferences", error);
     }
 
     // Get saved recipes from the back end
 
     try {
-      response = await fetch(this.props.route.params.path + 'recipes', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          }
-        }
-      );
-      savedRecipes = await response.json();
-      console.log(json)
-
+      console.log(`Recipes: ${this.token}`);
+      console.log(this.props.route.params.path + "recipes");
+      response = await fetch(this.props.route.params.path + "recipes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.token,
+        },
+      });
+      //this.savedRecipes = await response.json().savedRecipes;
+      let response = await response.json();
+      this.savedRecipes = response;
+      console.log(response);
     } catch (error) {
-      console.error('Could not load saved recipes', error);
+      console.error("Could not load saved recipes", error);
     }
 
-
     //Move to my recipes page and erase password entry
-    this.setState({
-      password: ''
-    }, () => {
-      this.props.navigation.navigate('My Saved Recipes')
-    })
+    this.setState(
+      {
+        password: "",
+      },
+      () => {
+        this.props.navigation.navigate("My Saved Recipes");
+      }
+    );
   };
-    
 
   render() {
+    {
+      console.log(this.context.userToken);
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.fields}>User name</Text>
         <TextInput
-          placeholder=''
-          onChangeText={val => this.onInputTextChange('userName', val)}
+          placeholder=""
+          onChangeText={(val) => this.onInputTextChange("userName", val)}
           style={styles.input}
         />
         <Text style={styles.fields}>Password</Text>
         <TextInput
-          placeholder=''
-          onChangeText={val => this.onInputTextChange('password', val)}
+          placeholder=""
+          onChangeText={(val) => this.onInputTextChange("password", val)}
           style={styles.input}
         />
-        <TouchableOpacity onPress={ () => this.login()}>
+        <TouchableOpacity onPress={() => this.login()}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </View>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   button: {
     height: 60,
-    backgroundColor: '#444444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10
+    backgroundColor: "#444444",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
   buttonText: {
-    color: '#ffffff',
-    fontSize: 18
+    color: "#ffffff",
+    fontSize: 18,
   },
   fields: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
     marginBottom: 5,
-    marginLeft: 20
+    marginLeft: 20,
   },
   container: {
-    backgroundColor: '#5588bb',
+    backgroundColor: "#5588bb",
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   input: {
     margin: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     paddingHorizontal: 20,
-    height: 40
-  }
-})
+    height: 40,
+  },
+});
 
-export default LoginScreen
+export default LoginScreen;
