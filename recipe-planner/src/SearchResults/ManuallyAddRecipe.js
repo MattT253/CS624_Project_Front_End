@@ -1,9 +1,9 @@
-// SearchResults tab
+// ManuallyAddRecipe tab
 import React from 'react'
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import uuidV4 from 'uuid/v4'
 
-class SearchResults extends React.Component {
+class ManuallyAddRecipe extends React.Component {
 
   state = {
     name: '',
@@ -12,21 +12,77 @@ class SearchResults extends React.Component {
   onChangeText = (key, value) => {
     this.setState({ [key]: value })
   }
-  submit = () => {
-    if (this.state.name === '' || this.state.details === '') alert('please complete form')
-    const recipe = {
-      name: this.state.name,
-      id: uuidV4(),
-      details: [this.state.details]
+
+  submit = async () => {
+
+    try {
+      response = await fetch(this.props.route.params.path + 'recipes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.props.route.param.userToken
+        },
+        body: JSON.stringify({
+          "title": "Classic Margherita Pizza",
+          "cuisine": "Italian",
+          "type": "Main Course",
+          "ingredients": [
+            "2 cups all-purpose flour",
+            "1 packet yeast",
+            "1 tsp sugar",
+            "3/4 cup warm water",
+            "2 tbsp olive oil",
+            "1/2 cup tomato sauce",
+            "200g mozzarella cheese",
+            "Fresh basil leaves",
+            "Salt to taste"
+          ],
+          "equipment": [
+            "Mixing bowl",
+            "Rolling pin",
+            "Pizza stone or baking sheet"
+          ],
+          "instructions": [
+            "In a bowl, mix flour, yeast, and sugar. Add warm water and olive oil and knead into dough.",
+            "Let the dough rise for 1 hour.",
+            "Preheat oven to 475°F (245°C).",
+            "Roll out the dough and place on a pizza stone.",
+            "Spread tomato sauce, add slices of mozzarella, and basil leaves.",
+            "Bake for 12-15 minutes or until crust is golden brown."
+          ],
+          "nutrition": {
+            "calories": 400,
+            "carbs": 50,
+            "protein": 15,
+            "fat": 18
+          },
+          "readyTime": 90
+        })
+      });
+      json = await response.json();
+      console.log(json);
+    } catch (error) {
+        console.error('Could not add recipe', error);
     }
-    this.props.route.params.saveToMyRecipes(recipe)
-    this.setState({
-      name: '',
-      details: ''
-    }, () => {
-      this.props.navigation.navigate('My Saved Recipes')
-    })
   }
+
+  //submit = () => {
+  //  if (this.state.name === '' || this.state.details === '') alert('please complete form')
+  //  const recipe = {
+  //    name: this.state.name,
+  //    id: uuidV4(),
+  //    details: [this.state.details]
+  //  }
+  //  this.props.route.params.saveToMyRecipes(recipe)
+  //  this.setState({
+  //    name: '',
+  //    details: ''
+  //  }, () => {
+  //    this.props.navigation.navigate('My Saved Recipes')
+  //  })
+  //}
+
+
   render() {
     return (
       <View style={styles.container}>
@@ -95,4 +151,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default SearchResults
+export default ManuallyAddRecipe

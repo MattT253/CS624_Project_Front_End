@@ -30,8 +30,6 @@ const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 
-const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NmI4ZTVmNDliOGM3OGE0NWRmNjcxNiIsImlhdCI6MTcwMTU0NzYxNSwiZXhwIjoxNzA0MTM5NjE1fQ._xsjem9p6ncsFFhmWExjWxQcMLM7aM5GAYitLZEFeqc'
-
 // Create the stack navigator on the My Recipes screen that allows the user to view individual recipes, pass this as a component to the tab navigator below
 function RecipesStackScreen ({route}){
     return (
@@ -59,7 +57,13 @@ class App extends React.Component {
     path: 'https://624api.azurewebsites.net/',
     userToken: '',
     myRecipes: [],
-    searchedRecipes: []
+    searchedRecipes: [],
+  }
+
+  setToken = (token) => {
+    console.log(this.state.userToken)
+    this.state.userToken = token
+    console.log(this.state.userToken)
   }
 
   saveToMyRecipes = (recipe) => {
@@ -107,7 +111,7 @@ class App extends React.Component {
             },
           })}
         >
-          <Tabs.Screen name='Log in' component={LoginScreen} initialParams={{userToken: this.state.userToken, path: this.state.path}} />
+          <Tabs.Screen name='Log in' component={LoginScreen} initialParams={{userToken: this.state.userToken, setToken: this.setToken, path: this.state.path}} />
           <Tabs.Screen name='My Recipes' component={RecipesStackScreen} initialParams={{userToken: this.state.userToken, deleteSavedRecipe: this.deleteSavedRecipe, myRecipes: this.state.myRecipes}} />
           <Tabs.Screen name='Recipe Finder' component={RecipeSearch} initialParams={{userToken: this.state.userToken, addRecipeToSearchList: this.addRecipeToSearchList}} />
           <Tabs.Screen name='Search Results' component={SearchResults} initialParams={{userToken: this.state.userToken, saveToMyRecipes: this.saveToMyRecipes, searchedRecipes: this.state.searchedRecipes}} />

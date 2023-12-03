@@ -32,8 +32,10 @@ class LoginScreen extends React.Component {
       console.log(json);
 
       // The userToken state is stored in the App.js file and passed to each screen, set it here on login
-      this.props.route.params.userToken = json.token
+      this.props.route.params.setToken(json.token)
       var token = json.token
+      
+      console.log(this.props.route.params);
 
     } catch (error) {
       console.error('Could not login', error);
@@ -41,7 +43,7 @@ class LoginScreen extends React.Component {
 
     // This should also request the user's stored recipes and dietary preferences from the back end and store them in the appropriate states.
     
-    // Get dietary preferences and saved recipes from the back end
+    // Get dietary preferences from the back end
     try {
       response = await fetch(this.props.route.params.path + 'users', {
           method: 'GET',
@@ -53,12 +55,29 @@ class LoginScreen extends React.Component {
       );
       json = await response.json();
       preferences = json.preferences
-      savedRecipes = json.savedRecipes
-      console.log(preferences);
 
     } catch (error) {
-      console.error('Could not load dietary preferences/saved recipes', error);
+      console.error('Could not load dietary preferences', error);
     }
+
+    // Get saved recipes from the back end
+
+    try {
+      response = await fetch(this.props.route.params.path + 'recipes', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          }
+        }
+      );
+      savedRecipes = await response.json();
+      console.log(json)
+
+    } catch (error) {
+      console.error('Could not load saved recipes', error);
+    }
+
 
     //Move to my recipes page and erase password entry
     this.setState({
