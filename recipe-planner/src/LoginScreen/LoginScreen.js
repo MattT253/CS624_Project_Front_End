@@ -70,7 +70,7 @@ class LoginScreen extends React.Component {
         },
       });
       json = await response.json();
-      console.log(json);
+      console.log(json.preferences.nutritionPreferences.minCalories);
       this.preferences = json.preferences;
     } catch (error) {
       console.error("Could not load dietary preferences", error);
@@ -88,21 +88,30 @@ class LoginScreen extends React.Component {
           Authorization: "Bearer " + this.token,
         },
       });
-      //this.savedRecipes = await response.json().savedRecipes;
+
       let response = await response.json();
       this.savedRecipes = response;
-      console.log(response);
+      //console.log(response);
     } catch (error) {
       console.error("Could not load saved recipes", error);
     }
 
-    //Move to my recipes page and erase password entry
+    //Erase password entry
     this.setState(
       {
         password: "",
       },
       () => {
-        this.props.navigation.navigate("My Saved Recipes");
+
+        // Send the preferences data to the My Dietary Preferences tab to be stored in the states there
+        this.props.navigation.navigate("My Dietary Preferences", {
+            loadedPreferences: this.preferences
+        });
+
+        // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
+        this.props.navigation.navigate("My Recipes", {
+          screen: "My Saved Recipes", params: {loadedRecipes: this.savedRecipes}
+        });
       }
     );
   };

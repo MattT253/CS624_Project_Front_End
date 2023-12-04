@@ -17,6 +17,7 @@ import { LogBox } from "react-native";
 
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
+  'Each child in a list should have a unique "key" prop',
 ]);
 
 // Import screens from custom class components
@@ -156,6 +157,7 @@ class App extends React.Component {
             <Tabs.Screen
               name="My Dietary Preferences"
               component={MyDietaryPreferences}
+              initialParams={{ path: this.state.path }}
             />
             <Tabs.Screen
               name="test add recipe"
