@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const RecipeSearch = (props) => {
+const RecipeSearch = ({ navigation, params }) => {
   const allTypes = [
     "none",
     "main course",
@@ -116,6 +116,7 @@ const RecipeSearch = (props) => {
       const response = await fetch(url, options);
       const result = await response.json(); // Assuming the response is in JSON format
       console.log(result);
+      navigation.navigate("Search Results", { recipes: result.results });
     } catch (error) {
       console.error(error);
     }
