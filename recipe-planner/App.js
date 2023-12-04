@@ -50,16 +50,12 @@ function RecipesStackScreen({ route }) {
         name="My Saved Recipes"
         component={MyRecipes}
         initialParams={{
-          myRecipes: route.params.myRecipes,
+          filler: '',
         }}
       />
       <Stack.Screen
         name="Recipe"
         component={Recipe}
-        initialParams={{
-          myRecipes: route.params.myRecipes,
-          deleteSavedRecipe: route.params.deleteSavedRecipe,
-        }}
       />
     </Stack.Navigator>
   );
@@ -73,7 +69,6 @@ class App extends React.Component {
     this.state = {
       path: "https://624api.azurewebsites.net/",
       userToken: "",
-      myRecipes: [],
       searchedRecipes: [],
     };
   }
@@ -85,12 +80,6 @@ class App extends React.Component {
   saveToMyRecipes = (recipe) => {
     const recipes = this.state.myRecipes;
     recipes.push(recipe);
-    this.setState({ recipes });
-  };
-
-  deleteSavedRecipe = (recipe) => {
-    const recipes = this.state.myRecipes;
-    recipes.pop(recipe);
     this.setState({ recipes });
   };
 
@@ -134,10 +123,6 @@ class App extends React.Component {
             <Tabs.Screen
               name="My Recipes"
               component={RecipesStackScreen}
-              initialParams={{
-                deleteSavedRecipe: this.deleteSavedRecipe,
-                myRecipes: this.state.myRecipes,
-              }}
             />
             <Tabs.Screen
               name="Recipe Finder"

@@ -70,7 +70,6 @@ class LoginScreen extends React.Component {
         },
       });
       json = await response.json();
-      console.log(json.preferences.nutritionPreferences.minCalories);
       this.preferences = json.preferences;
     } catch (error) {
       console.error("Could not load dietary preferences", error);

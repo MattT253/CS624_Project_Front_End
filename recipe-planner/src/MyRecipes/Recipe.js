@@ -10,31 +10,40 @@ class Recipe extends React.Component {
       }
 
   deleteRecipe = () => {
-    this.props.route.params.deleteSavedRecipe(this.props.route.params.recipe)
     this.setState({
         fill: ''
       }, () => {
-        this.props.navigation.navigate('My Saved Recipes')
+        this.props.navigation.navigate('My Saved Recipes', {deleteRecipe: this})
       })
   }
 
   render() {
     const {recipe} = this.props.route.params
-    console.log('props: ', this.props)
+    //console.log(recipe)
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={[!recipe.details.length && { flex: 1 }]}>
-          <View style={[styles.locationsContainer, !recipe.details.length && { flex: 1, justifyContent: 'center' }]}>
+        <ScrollView contentContainerStyle={[!recipe.title.length && { flex: 1 }]}>
+          <View style={[styles.itemsContainer, !recipe.title.length && { flex: 1, justifyContent: 'center' }]}>
             {
-              !recipe.details.length && <Text>No saved recipes</Text>
+              !recipe.title.length && <Text>No information on this recipe</Text>
             }
             {
-              recipe.details.map((location, index) => (
-                <View key={index} style={styles.locationContainer}>
-                  <Text>{recipe.details.toString()}</Text>
+              <View style={styles.itemContainer}>
+                <Text style={styles.recipeTitleText}>{recipe.title}</Text>
+                <Text style={styles.recipeText}>{recipe.cuisine}</Text>
+                <Text style={styles.recipeText}>{recipe.type}</Text>
+              </View>
+            }
+            
+            <View key={index} style={styles.listContainer}>
+            
+              recipe.ingredients.map((item, index) => (
+                <View key={index} style={styles.listContainer}>
+                  <Text style={styles.listText}>{item}</Text>
                 </View>
               ))
-            }
+              </View>
+            
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
@@ -53,21 +62,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  locationsContainer: {
+  itemsContainer: {
     paddingBottom: 104
   },
-  input: {
-    height: 50,
-    backgroundColor: '#aabbcc',
-    color: 'white',
-    paddingHorizontal: 8,
-    position: 'absolute',
-    width: '100%',
-    bottom: 104,
-    left: 0
-  },
-  input2: {
-    bottom: 52
+  listContainer: {
+    paddingLeft: 20,
+    paddingBottom: 5,
+    paddingTop: 5,
+    justifyContent: 'center',
   },
   buttonContainer: {
     position: 'absolute',
@@ -84,17 +86,26 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white'
   },
-  locationContainer: {
-    padding: 10,
+  itemContainer: {
+    padding: 20,
     borderBottomColor: '#aabbcc',
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
+    justifyContent: 'center',
   },
-  locationName: {
-    fontSize: 20
+  recipeTitleText: {
+    fontWeight: 'bold',
+    fontSize: 25,
+    padding: 10,
+    alignItems: 'center',
+    borderBottomColor: '#7777cc',
+    borderBottomWidth: 2,
   },
-  locationInfo: {
-    color: 'rgba(0, 0, 0, .5)'
-  }
+  recipeText: {
+    fontSize: 18,
+  },
+  listText: {
+    fontSize: 14,
+  },
 })
 
 export default Recipe
