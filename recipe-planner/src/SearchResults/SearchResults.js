@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from "react-native";
 import RecipeModal from "./RecipeModal"; // Import RecipeModal
 
@@ -58,8 +59,8 @@ const SearchResults = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
+    //flex: 1,
     flexGrow: 1,
-    justifyContent: "center",
     backgroundColor: "#5588bb",
     padding: 10,
   },

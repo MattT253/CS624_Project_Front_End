@@ -1,8 +1,34 @@
-import React from "react";
-import { Modal, View, Text, Button, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Modal,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+} from "react-native";
+import { getRecipeDetails } from "../Data/Spoonacular";
 
 const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
+  const [detailedRecipe, setDetailedRecipe] = useState(null);
+
+  useEffect(() => {
+    if (visible && recipe) {
+      fetchRecipeDetails(recipe.id);
+    }
+  }, [visible, recipe]);
+
+  const fetchRecipeDetails = async (id) => {
+    const response = await getRecipeDetails(id);
+    if (response) {
+      setDetailedRecipe(response);
+    }
+  };
+
   if (!recipe) return null;
+
   return (
     <Modal
       animationType="slide"
@@ -10,12 +36,73 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalView}>
-        <Text style={styles.modalTitle}>{recipe.title}</Text>
-        {/* Add more recipe details here as needed */}
-        <Button title="Save this recipe" onPress={onSave} />
-        <Button title="Go back" onPress={onClose} />
-      </View>
+      <ScrollView style={styles.modalView}>
+        <Text style={styles.modalTitle}>
+          {detailedRecipe ? detailedRecipe.title : recipe.title}
+        </Text>
+
+        {detailedRecipe && (
+          <>
+            <Image
+              source={{ uri: detailedRecipe.image }}
+              style={styles.recipeImage}
+            />
+
+            <Text style={styles.detailText}>
+              Preparation Time: {detailedRecipe.preparationMinutes} minutes
+            </Text>
+            <Text style={styles.detailText}>
+              Cooking Time: {detailedRecipe.cookingMinutes} minutes
+            </Text>
+            <Text style={styles.detailText}>
+              Servings: {detailedRecipe.servings}
+            </Text>
+            <Text style={styles.detailText}>
+              Likes: {detailedRecipe.aggregateLikes}
+            </Text>
+            <Text style={styles.detailText}>
+              Health Score: {detailedRecipe.healthScore}
+            </Text>
+            {/* Ingredients List */}
+            {detailedRecipe.extendedIngredients &&
+              detailedRecipe.extendedIngredients.length > 0 && (
+                <>
+                  <Text style={styles.sectionTitle}>Ingredients:</Text>
+                  {detailedRecipe.extendedIngredients.map(
+                    (ingredient, index) => (
+                      <Text key={index} style={styles.ingredientText}>
+                        {ingredient.original}
+                      </Text>
+                    )
+                  )}
+                </>
+              )}
+
+            {/* Recipe Steps */}
+            {/* {detailedRecipe.analyzedInstructions &&
+              detailedRecipe.analyzedInstructions.length > 0 &&
+              detailedRecipe.analyzedInstructions[0].steps.length > 0 && (
+                <>
+                  <Text style={styles.sectionTitle}>Instructions:</Text>
+                  {detailedRecipe.analyzedInstructions[0].steps.map(
+                    (step, index) => (
+                      <Text key={index} style={styles.instructionText}>
+                        {step.number}. {step.step}
+                      </Text>
+                    )
+                  )}
+                </>
+              )} */}
+          </>
+        )}
+
+        <Pressable style={styles.button} onPress={onSave}>
+          <Text style={styles.buttonText}>Save this recipe</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={onClose}>
+          <Text style={styles.buttonText}>Go back</Text>
+        </Pressable>
+      </ScrollView>
     </Modal>
   );
 };
@@ -25,13 +112,47 @@ const styles = StyleSheet.create({
     marginTop: 50,
     backgroundColor: "white",
     padding: 20,
-    alignItems: "center",
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  recipeImage: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+    borderRadius: 10,
     marginBottom: 15,
   },
-  // Add more styles as needed
+  detailText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  instructionText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  button: {
+    marginTop: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    backgroundColor: "#5588bb",
+    alignSelf: "stretch",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });
 
 export default RecipeModal;

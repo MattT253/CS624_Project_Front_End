@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-
+import { getRecipes } from "../Data/Spoonacular";
 const RecipeSearch = ({ navigation, params }) => {
   const allTypes = [
     "none",
@@ -102,21 +102,20 @@ const RecipeSearch = ({ navigation, params }) => {
       type: types.join(","),
     });
 
-    const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?${queryParams.toString()}`;
-    const options = {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": "edc1cf53c9msh509f6e4a610f77dp1e03aajsnb5e9e035ff19",
-        "X-RapidAPI-Host":
-          "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-      },
-    };
+    // const url = `https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch?${queryParams.toString()}`;
+    // const options = {
+    //   method: "GET",
+    //   headers: {
+    //     "X-RapidAPI-Key": "edc1cf53c9msh509f6e4a610f77dp1e03aajsnb5e9e035ff19",
+    //     "X-RapidAPI-Host":
+    //       "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
+    //   },
+    // };
 
     try {
-      const response = await fetch(url, options);
-      const result = await response.json(); // Assuming the response is in JSON format
-      console.log(result);
-      navigation.navigate("Search Results", { recipes: result.results });
+      const response = await getRecipes(queryParams); // Assuming the response is in JSON format
+      console.log(response);
+      navigation.navigate("Search Results", { recipes: response.results });
     } catch (error) {
       console.error(error);
     }
