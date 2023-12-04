@@ -1,32 +1,36 @@
 // ManuallyAddRecipe tab
-import React from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import uuidV4 from 'uuid/v4'
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import uuidV4 from "uuid/v4";
 
 class ManuallyAddRecipe extends React.Component {
-
   state = {
-    name: '',
-    details: ''
-  }
+    name: "",
+    details: "",
+  };
   onChangeText = (key, value) => {
-    this.setState({ [key]: value })
-  }
+    this.setState({ [key]: value });
+  };
 
   submit = async () => {
-
     try {
-      response = await fetch(this.props.route.params.path + 'recipes', {
-        method: 'POST',
+      response = await fetch(this.props.route.params.path + "recipes", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.props.route.param.userToken
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.props.route.param.userToken,
         },
         body: JSON.stringify({
-          "title": "Classic Margherita Pizza",
-          "cuisine": "Italian",
-          "type": "Main Course",
-          "ingredients": [
+          title: "Classic Margherita Pizza",
+          cuisine: "Italian",
+          type: "Main Course",
+          ingredients: [
             "2 cups all-purpose flour",
             "1 packet yeast",
             "1 tsp sugar",
@@ -35,36 +39,36 @@ class ManuallyAddRecipe extends React.Component {
             "1/2 cup tomato sauce",
             "200g mozzarella cheese",
             "Fresh basil leaves",
-            "Salt to taste"
+            "Salt to taste",
           ],
-          "equipment": [
+          equipment: [
             "Mixing bowl",
             "Rolling pin",
-            "Pizza stone or baking sheet"
+            "Pizza stone or baking sheet",
           ],
-          "instructions": [
+          instructions: [
             "In a bowl, mix flour, yeast, and sugar. Add warm water and olive oil and knead into dough.",
             "Let the dough rise for 1 hour.",
             "Preheat oven to 475°F (245°C).",
             "Roll out the dough and place on a pizza stone.",
             "Spread tomato sauce, add slices of mozzarella, and basil leaves.",
-            "Bake for 12-15 minutes or until crust is golden brown."
+            "Bake for 12-15 minutes or until crust is golden brown.",
           ],
-          "nutrition": {
-            "calories": 400,
-            "carbs": 50,
-            "protein": 15,
-            "fat": 18
+          nutrition: {
+            calories: 400,
+            carbs: 50,
+            protein: 15,
+            fat: 18,
           },
-          "readyTime": 90
-        })
+          readyTime: 90,
+        }),
       });
       json = await response.json();
       console.log(json);
     } catch (error) {
-        console.error('Could not add recipe', error);
+      console.error("Could not add recipe", error);
     }
-  }
+  };
 
   //submit = () => {
   //  if (this.state.name === '' || this.state.details === '') alert('please complete form')
@@ -82,20 +86,19 @@ class ManuallyAddRecipe extends React.Component {
   //  })
   //}
 
-
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.fields}>Recipe</Text>
         <TextInput
-          placeholder='Name'
-          onChangeText={val => this.onChangeText('name', val)}
+          placeholder="Name"
+          onChangeText={(val) => this.onChangeText("name", val)}
           style={styles.input}
           value={this.state.name}
         />
         <TextInput
-          placeholder='Details'
-          onChangeText={val => this.onChangeText('details', val)}
+          placeholder="Details"
+          onChangeText={(val) => this.onChangeText("details", val)}
           style={styles.input}
           value={this.state.details}
         />
@@ -105,10 +108,9 @@ class ManuallyAddRecipe extends React.Component {
           </View>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
-
 
 /*
   render() {
@@ -123,32 +125,32 @@ class ManuallyAddRecipe extends React.Component {
 const styles = StyleSheet.create({
   button: {
     height: 60,
-    backgroundColor: '#444444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10
+    backgroundColor: "#444444",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
   buttonText: {
-    color: '#ffffff',
-    fontSize: 18
+    color: "#ffffff",
+    fontSize: 18,
   },
   fields: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 20,
     marginBottom: 5,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   container: {
-    backgroundColor: '#5588bb',
+    backgroundColor: "#5588bb",
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   input: {
     margin: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     paddingHorizontal: 20,
-    height: 40
-  }
-})
+    height: 40,
+  },
+});
 
-export default ManuallyAddRecipe
+export default ManuallyAddRecipe;

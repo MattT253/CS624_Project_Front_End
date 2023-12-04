@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
-  Image,
   TouchableOpacity,
+  Image,
 } from "react-native";
+import RecipeModal from "./RecipeModal"; // Import RecipeModal
 
-// Component for individual recipe cards
 const RecipeCard = ({ recipe, onPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -19,28 +19,40 @@ const RecipeCard = ({ recipe, onPress }) => {
 };
 
 const SearchResults = ({ navigation, route }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
   const recipes = route.params.recipes;
 
-  // Function to render each recipe card
   const renderRecipeCard = ({ item }) => (
     <RecipeCard
       recipe={item}
       onPress={() => {
-        // Insert navigation logic here if needed
-        // navigation.navigate('RecipeDetail', { recipeId: item.id });
+        setSelectedRecipe(item);
+        setModalVisible(true);
       }}
     />
   );
 
   return (
-    <FlatList
-      contentContainerStyle={styles.container}
-      data={recipes}
-      renderItem={renderRecipeCard}
-      keyExtractor={(item) => item.id.toString()}
-      numColumns={2} // Set the number of columns for the grid
-      columnWrapperStyle={styles.row} // Style for the row
-    />
+    <View style={styles.container}>
+      <FlatList
+        contentContainerStyle={styles.container}
+        data={recipes}
+        renderItem={renderRecipeCard}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+      />
+      <RecipeModal
+        recipe={selectedRecipe}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSave={() => {
+          // Logic to save the recipe
+          setModalVisible(false);
+        }}
+      />
+    </View>
   );
 };
 
@@ -75,22 +87,7 @@ const styles = StyleSheet.create({
   row: {
     justifyContent: "space-between",
   },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 18,
-  },
-  fields: {
-    color: "#ffffff",
-    fontSize: 20,
-    marginBottom: 5,
-    alignSelf: "center",
-  },
-  input: {
-    margin: 10,
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 20,
-    height: 40,
-  },
+  // Add more styles as needed
 });
 
 export default SearchResults;
