@@ -30,19 +30,46 @@ class Recipe extends React.Component {
             {
               <View style={styles.itemContainer}>
                 <Text style={styles.recipeTitleText}>{recipe.title}</Text>
-                <Text style={styles.recipeText}>{recipe.cuisine}</Text>
+                <Text style={[styles.recipeText, {paddingTop: 10}]}>{recipe.cuisine}</Text>
                 <Text style={styles.recipeText}>{recipe.type}</Text>
+                <Text style={[styles.recipeText, {borderBottomColor: '#aabbcc', borderBottomWidth: 2, paddingBottom: 10}]}>Ready Time: {recipe.readyTime}</Text>
+                <Text style={[styles.recipeText, {paddingTop: 10}]}>Calories: {recipe.calories}</Text>
+                <Text style={styles.recipeText}>Carbs (g): {recipe.carbs}</Text>
+                <Text style={styles.recipeText}>Protein (g): {recipe.protein}</Text>
+                <Text style={styles.recipeText}>Fat (g): {recipe.fat}</Text>
               </View>
             }
             
-            <View key={index} style={styles.listContainer}>
-            
-              recipe.ingredients.map((item, index) => (
-                <View key={index} style={styles.listContainer}>
-                  <Text style={styles.listText}>{item}</Text>
-                </View>
-              ))
-              </View>
+            <View style={styles.listContainer}>
+              <Text style={[styles.recipeText, {paddingTop: 10, paddingBottom: 10}]}>Ingredients:</Text>
+              {
+                recipe.ingredients.map((item, index) => (
+                    <Text style={styles.listText}>{item}</Text>
+                ))
+              }
+            </View>
+
+            <View style={styles.listContainer}>
+              <Text style={[styles.recipeText, {paddingTop: 10, paddingBottom: 10}]}>Equipment:</Text>
+              {
+                recipe.equipment.map((item, index) => (
+                    <Text style={styles.listText}>{item}</Text>
+                ))
+              }
+            </View>
+
+            <View style={styles.listContainer}>
+              <Text style={[styles.recipeText, {paddingTop: 10, paddingBottom: 10}]}>Instructions:</Text>
+              {
+                recipe.instructions.map((item, index) => (
+                    <Text style={styles.listText}>{item}</Text>
+                ))
+              }
+            </View>
+
+            <View style={styles.itemContainer}>
+                
+            </View>
             
           </View>
         </ScrollView>
@@ -70,6 +97,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingTop: 5,
     justifyContent: 'center',
+    borderBottomColor: '#aabbcc',
+    borderBottomWidth: 2,
   },
   buttonContainer: {
     position: 'absolute',
