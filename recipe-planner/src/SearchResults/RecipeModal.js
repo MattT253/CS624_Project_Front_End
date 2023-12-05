@@ -49,10 +49,16 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
             />
 
             <Text style={styles.detailText}>
-              Preparation Time: {detailedRecipe.preparationMinutes} minutes
+              Preparation Time:{" "}
+              {detailedRecipe.preparationMinutes <= 0
+                ? "Not Listed"
+                : `${detailedRecipe.preparationMinutes} minutes`}
             </Text>
             <Text style={styles.detailText}>
-              Cooking Time: {detailedRecipe.cookingMinutes} minutes
+              Cooking Time:{" "}
+              {detailedRecipe.cookingMinutes <= 0
+                ? "Not Listed"
+                : `${detailedRecipe.cookingMinutes} minutes`}
             </Text>
             <Text style={styles.detailText}>
               Servings: {detailedRecipe.servings}
@@ -77,7 +83,7 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
                   )}
                 </>
               )}
-
+            {/* Removed because it was too much information */}
             {/* Recipe Steps */}
             {/* {detailedRecipe.analyzedInstructions &&
               detailedRecipe.analyzedInstructions.length > 0 &&

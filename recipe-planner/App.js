@@ -25,7 +25,7 @@ import LoginScreen from "./src/LoginScreen/LoginScreen";
 import RecipeSearch from "./src/RecipeSearch/RecipeSearch";
 import SearchResults from "./src/SearchResults/SearchResults";
 import MyDietaryPreferences from "./src/MyDietaryPreferences/MyDietaryPreferences";
-
+import AddRecipe from "./src/MyRecipes/AddRecipe";
 import MyRecipes from "./src/MyRecipes/MyRecipes";
 import Recipe from "./src/MyRecipes/Recipe";
 
@@ -50,13 +50,10 @@ function RecipesStackScreen({ route }) {
         name="My Saved Recipes"
         component={MyRecipes}
         initialParams={{
-          filler: '',
+          filler: "",
         }}
       />
-      <Stack.Screen
-        name="Recipe"
-        component={Recipe}
-      />
+      <Stack.Screen name="Recipe" component={Recipe} />
     </Stack.Navigator>
   );
 }
@@ -120,10 +117,7 @@ class App extends React.Component {
               component={LoginScreen}
               initialParams={{ path: this.state.path }}
             />
-            <Tabs.Screen
-              name="My Recipes"
-              component={RecipesStackScreen}
-            />
+            <Tabs.Screen name="My Recipes" component={RecipesStackScreen} />
             <Tabs.Screen
               name="Recipe Finder"
               component={RecipeSearch}
@@ -144,9 +138,14 @@ class App extends React.Component {
               component={MyDietaryPreferences}
               initialParams={{ path: this.state.path }}
             />
-            <Tabs.Screen
+            {/* <Tabs.Screen
               name="test add recipe"
               component={ManuallyAddRecipe}
+              initialParams={{ saveToMyRecipes: this.saveToMyRecipes }}
+            /> */}
+            <Tabs.Screen
+              name="Add Recipe"
+              component={AddRecipe}
               initialParams={{ saveToMyRecipes: this.saveToMyRecipes }}
             />
           </Tabs.Navigator>

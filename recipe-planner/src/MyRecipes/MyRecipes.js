@@ -1,10 +1,16 @@
 // MyRecipes tab
-import React from 'react'
-import { View, ScrollView, Text, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
-import uuidV4 from 'uuid/v4'
+import React from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
+import uuidV4 from "uuid/v4";
 
 class MyRecipes extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -24,8 +30,7 @@ class MyRecipes extends React.Component {
       protein: 15,
       fat: 18,
 
-      readyTime: 90
-      
+      readyTime: 90,
     };
   }
 
@@ -42,19 +47,17 @@ class MyRecipes extends React.Component {
   };
 
   navigate = (item) => {
-    this.props.navigation.navigate('Recipe', { recipe: item })
-  }
+    this.props.navigation.navigate("Recipe", { recipe: item });
+  };
   render() {
-
     // Check if the loadedRecipes parameter has been passed, if so, then the user has just logged in
     // Set the state of the users recipes
     if (this.props.route.params.loadedRecipes !== undefined) {
-      ({loadedRecipes} = this.props.route.params)
+      ({ loadedRecipes } = this.props.route.params);
 
-      this.state.myRecipes = []
+      this.state.myRecipes = [];
 
-      for(let i = 0; i < loadedRecipes.length; i++){
-
+      for (let i = 0; i < loadedRecipes.length; i++) {
         const recipe = {
           title: loadedRecipes[i].title,
           cuisine: loadedRecipes[i].cuisine,
@@ -69,72 +72,81 @@ class MyRecipes extends React.Component {
           protein: loadedRecipes[i].nutrition.protein,
           fat: loadedRecipes[i].nutrition.fat,
 
-          readyTime: loadedRecipes[i].readyTime
-        }
-        this.saveToMyRecipes(recipe)
+          readyTime: loadedRecipes[i].readyTime,
+        };
+        this.saveToMyRecipes(recipe);
       }
-
     }
 
     // Check if the deleteRecipe parameter has been passed, if so then delete the recipe
     if (this.props.route.params.deleteRecipe !== undefined) {
-      this.deleteSavedRecipe(this.props.route.params.deleteRecipe)
+      this.deleteSavedRecipe(this.props.route.params.deleteRecipe);
     }
 
     return (
-      <ScrollView  contentContainerStyle={[!this.state.myRecipes.length && { flex: 1 }]}>
-        <View style={[!this.state.myRecipes.length && { justifyContent: 'center', flex: 1 }]}>
-          {
-            !this.state.myRecipes.length && <Text style={styles.fields}>No saved recipes yet!</Text>
-          }
-          {
-            this.state.myRecipes.map((item, index) => (
-              <TouchableWithoutFeedback onPress={() => this.navigate(item)} key={index} >
-                <View style={styles.recipeContainer}>
-                  <Text style={styles.recipe}>{item.title}</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            ))
-          }
+      <ScrollView
+        contentContainerStyle={[!this.state.myRecipes.length && { flex: 1 }]}
+      >
+        <View
+          style={[
+            !this.state.myRecipes.length && {
+              justifyContent: "center",
+              flex: 1,
+            },
+          ]}
+        >
+          {!this.state.myRecipes.length && (
+            <Text style={styles.fields}>No saved recipes yet!</Text>
+          )}
+          {this.state.myRecipes.map((item, index) => (
+            <TouchableWithoutFeedback
+              onPress={() => this.navigate(item)}
+              key={index}
+            >
+              <View style={styles.recipeContainer}>
+                <Text style={styles.recipe}>{item.title}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          ))}
         </View>
       </ScrollView>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   button: {
     height: 60,
-    backgroundColor: '#444444',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10
+    backgroundColor: "#444444",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 10,
   },
   buttonText: {
-    color: '#ffffff',
-    fontSize: 18
+    color: "#ffffff",
+    fontSize: 18,
   },
   fields: {
     fontSize: 20,
     marginBottom: 5,
-    alignSelf: 'center'
+    alignSelf: "center",
   },
   recipeContainer: {
     padding: 10,
     borderBottomWidth: 2,
-    borderBottomColor: 'green'
+    borderBottomColor: "green",
   },
   container: {
-    backgroundColor: '#5588bb',
+    backgroundColor: "#5588bb",
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: "center",
   },
   input: {
     margin: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     paddingHorizontal: 20,
-    height: 40
-  }
-})
+    height: 40,
+  },
+});
 
-export default MyRecipes
+export default MyRecipes;
