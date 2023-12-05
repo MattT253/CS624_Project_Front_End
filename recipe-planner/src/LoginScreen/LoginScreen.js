@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import uuidV4 from "uuid/v4";
 import TokenContext from "../Context/TokenContext";
@@ -23,7 +24,9 @@ class LoginScreen extends React.Component {
   onInputTextChange = (key, value) => {
     this.setState({ [key]: value });
   };
-
+  logout = () => {
+    this.context.setToken(null);
+  };
   login = async () => {
     try {
       var response = await fetch(this.props.route.params.path + "users/login", {
@@ -33,8 +36,10 @@ class LoginScreen extends React.Component {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: "test@test.com",
-          password: "1234!@#$",
+          // email: "test@test.com",
+          // password: "1234!@#$",
+          email: this.state.userName,
+          password: this.state.password,
         }),
       });
       var json = await response.json();
@@ -59,65 +64,74 @@ class LoginScreen extends React.Component {
     // This should also request the user's stored recipes and dietary preferences from the back end and store them in the appropriate states.
 
     // Get dietary preferences from the back end
-    try {
-      console.log(`Dietary Preferences: ${this.token}`);
-      console.log(this.props.route.params.path);
-      response = await fetch(this.props.route.params.path + "users", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + this.token,
-        },
-      });
-      json = await response.json();
-      this.preferences = json.preferences;
-    } catch (error) {
-      console.error("Could not load dietary preferences", error);
-    }
+    // try {
+    //   console.log(`Dietary Preferences: ${this.token}`);
+    //   console.log(this.props.route.params.path);
+    //   response = await fetch(this.props.route.params.path + "users", {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: "Bearer " + this.token,
+    //     },
+    //   });
+    //   json = await response.json();
+    //   this.preferences = json.preferences;
+    // } catch (error) {
+    //   console.error("Could not load dietary preferences", error);
+    // }
 
     // Get saved recipes from the back end
 
-    try {
-      console.log(`Recipes: ${this.token}`);
-      console.log(this.props.route.params.path + "recipes");
-      response = await fetch(this.props.route.params.path + "recipes", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + this.token,
-        },
-      });
+    // try {
+    //   console.log(`Recipes: ${this.token}`);
+    //   console.log(this.props.route.params.path + "recipes");
+    //   response = await fetch(this.props.route.params.path + "recipes", {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: "Bearer " + this.token,
+    //     },
+    //   });
 
-      let response = await response.json();
-      this.savedRecipes = response;
-      //console.log(response);
-    } catch (error) {
-      console.error("Could not load saved recipes", error);
-    }
+    //   let response = await response.json();
+    //   this.savedRecipes = response;
+    //   //console.log(response);
+    // } catch (error) {
+    //   console.error("Could not load saved recipes", error);
+    // }
 
-    //Erase password entry
-    this.setState(
-      {
-        password: "",
-      },
-      () => {
+    // //Erase password entry
+    // this.setState(
+    //   {
+    //     password: "",
+    //   },
+    //   () => {
+    //     // Send the preferences data to the My Dietary Preferences tab to be stored in the states there
+    //     this.props.navigation.navigate("My Dietary Preferences", {
+    //       loadedPreferences: this.preferences,
+    //     });
 
-        // Send the preferences data to the My Dietary Preferences tab to be stored in the states there
-        this.props.navigation.navigate("My Dietary Preferences", {
-            loadedPreferences: this.preferences
-        });
-
-        // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
-        this.props.navigation.navigate("My Recipes", {
-          screen: "My Saved Recipes", params: {loadedRecipes: this.savedRecipes}
-        });
-      }
-    );
+    //     // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
+    //     this.props.navigation.navigate("My Recipes", {
+    //       screen: "My Saved Recipes",
+    //       params: { loadedRecipes: this.savedRecipes },
+    //     });
+    //   }
+    // );
   };
 
   render() {
-    {
-      console.log(this.context.userToken);
+    if (this.context.userToken) {
+      return (
+        <View>
+          <Text>You are already logged in</Text>
+          <TouchableOpacity onPress={() => this.logout()}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
     }
     return (
       <View style={styles.container}>
