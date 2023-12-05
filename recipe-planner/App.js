@@ -143,11 +143,11 @@ class App extends React.Component {
               component={ManuallyAddRecipe}
               initialParams={{ saveToMyRecipes: this.saveToMyRecipes }}
             /> */}
-            <Tabs.Screen
+            {/* <Tabs.Screen
               name="Add Recipe"
               component={AddRecipe}
               initialParams={{ saveToMyRecipes: this.saveToMyRecipes }}
-            />
+            /> */}
           </Tabs.Navigator>
         </NavigationContainer>
       </TokenContext.Provider>

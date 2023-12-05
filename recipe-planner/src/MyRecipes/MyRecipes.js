@@ -1,118 +1,108 @@
-// MyRecipes tab
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
   Text,
   StyleSheet,
-  TextInput,
   TouchableWithoutFeedback,
 } from "react-native";
+import { getSavedRecipes } from "../Data/624API";
+import { getRecipeDetails } from "../Data/Spoonacular";
 import uuidV4 from "uuid/v4";
 
-class MyRecipes extends React.Component {
-  constructor(props) {
-    super(props);
+const MyRecipes = ({ navigation, params }) => {
+  const [myRecipes, setMyRecipes] = useState([]);
+  const [myRecipeIds, setMyRecipeIds] = useState([]);
 
-    this.state = {
-      myRecipes: [],
-
-      title: "",
-      cuisine: "",
-      type: "",
-      ingredients: [],
-      equipment: [],
-      instructions: [],
-
-      // nutrition
-      calories: 400,
-      carbs: 50,
-      protein: 15,
-      fat: 18,
-
-      readyTime: 90,
-    };
-  }
-
-  saveToMyRecipes = (recipe) => {
-    const recipes = this.state.myRecipes;
-    recipes.push(recipe);
-    //this.setState({ recipes });
+  const fetchSavedRecipeIds = async () => {
+    try {
+      const savedRecipeIds = await getSavedRecipes();
+      console.log("Fetched saved recipe IDs:", savedRecipeIds);
+      setMyRecipeIds(savedRecipeIds);
+    } catch (error) {
+      console.error("Failed to fetch saved recipe IDs:", error);
+    }
   };
 
-  deleteSavedRecipe = (recipe) => {
-    const recipes = this.state.myRecipes;
-    recipes.pop(recipe);
-    //this.setState({ recipes });
-  };
-
-  navigate = (item) => {
-    this.props.navigation.navigate("Recipe", { recipe: item });
-  };
-  render() {
-    // Check if the loadedRecipes parameter has been passed, if so, then the user has just logged in
-    // Set the state of the users recipes
-    if (this.props.route.params.loadedRecipes !== undefined) {
-      ({ loadedRecipes } = this.props.route.params);
-
-      this.state.myRecipes = [];
-
-      for (let i = 0; i < loadedRecipes.length; i++) {
-        const recipe = {
-          title: loadedRecipes[i].title,
-          cuisine: loadedRecipes[i].cuisine,
-          type: loadedRecipes[i].type,
-          ingredients: loadedRecipes[i].ingredients,
-          equipment: loadedRecipes[i].equipment,
-          instructions: loadedRecipes[i].instructions,
-
-          // nutrition
-          calories: loadedRecipes[i].nutrition.calories,
-          carbs: loadedRecipes[i].nutrition.carbs,
-          protein: loadedRecipes[i].nutrition.protein,
-          fat: loadedRecipes[i].nutrition.fat,
-
-          readyTime: loadedRecipes[i].readyTime,
-        };
-        this.saveToMyRecipes(recipe);
+  const fetchSavedRecipes = async () => {
+    try {
+      console.log("Fetching recipes for IDs:", myRecipeIds);
+      for (const id of myRecipeIds) {
+        const recipe = await getRecipeDetails(id);
+        console.log("Fetched recipe:", recipe);
+        setMyRecipes((prevRecipes) => [...prevRecipes, recipe]);
       }
+    } catch (error) {
+      console.error("Failed to fetch saved recipes:", error);
     }
+  };
 
-    // Check if the deleteRecipe parameter has been passed, if so then delete the recipe
-    if (this.props.route.params.deleteRecipe !== undefined) {
-      this.deleteSavedRecipe(this.props.route.params.deleteRecipe);
+  useEffect(() => {
+    fetchSavedRecipeIds();
+  }, []);
+
+  useEffect(() => {
+    console.log("myRecipeIds updated:", myRecipeIds);
+    if (myRecipeIds.length > 0) {
+      fetchSavedRecipes();
     }
+  }, [myRecipeIds]);
 
-    return (
-      <ScrollView
-        contentContainerStyle={[!this.state.myRecipes.length && { flex: 1 }]}
+  // const saveToMyRecipes = (recipe) => {
+  //   setMyRecipes((prevRecipes) => [...prevRecipes, recipe]);
+  // };
+
+  // const deleteSavedRecipe = (recipe) => {
+  //   setMyRecipes((prevRecipes) =>
+  //     prevRecipes.filter((item) => item !== recipe)
+  //   );
+  // };
+
+  // const navigate = (item) => {
+  //   props.navigation.navigate("Recipe", { recipe: item });
+  // };
+
+  // useEffect(async () => {
+  //   // Handle loadedRecipes
+  //   const loadedRecipes = await getSavedRecipes();
+  //   if (loadedRecipes) {
+  //     setMyRecipes(loadedRecipes);
+  //   }
+
+  //   // Handle deleteRecipe
+  //   const deleteRecipe = props.route.params?.deleteRecipe;
+  //   if (deleteRecipe) {
+  //     deleteSavedRecipe(deleteRecipe);
+  //   }
+  // }, [props.route.params]);
+
+  return (
+    <ScrollView contentContainerStyle={[!myRecipes.length && { flex: 1 }]}>
+      <View
+        style={[
+          !myRecipes.length && {
+            justifyContent: "center",
+            flex: 1,
+          },
+        ]}
       >
-        <View
-          style={[
-            !this.state.myRecipes.length && {
-              justifyContent: "center",
-              flex: 1,
-            },
-          ]}
-        >
-          {!this.state.myRecipes.length && (
-            <Text style={styles.fields}>No saved recipes yet!</Text>
-          )}
-          {this.state.myRecipes.map((item, index) => (
-            <TouchableWithoutFeedback
-              onPress={() => this.navigate(item)}
-              key={index}
-            >
-              <View style={styles.recipeContainer}>
-                <Text style={styles.recipe}>{item.title}</Text>
-              </View>
-            </TouchableWithoutFeedback>
-          ))}
-        </View>
-      </ScrollView>
-    );
-  }
-}
+        {!myRecipes.length && (
+          <Text style={styles.fields}>No saved recipes yet!</Text>
+        )}
+        {myRecipes.map((item, index) => (
+          <TouchableWithoutFeedback
+            onPress={() => navigate(item)}
+            key={uuidV4()}
+          >
+            <View style={styles.recipeContainer}>
+              <Text style={styles.recipe}>{item.title}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        ))}
+      </View>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
   button: {

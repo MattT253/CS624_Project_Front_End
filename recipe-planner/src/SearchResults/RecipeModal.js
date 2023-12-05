@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Modal,
   View,
@@ -10,9 +10,14 @@ import {
   SafeAreaView,
 } from "react-native";
 import { getRecipeDetails } from "../Data/Spoonacular";
+import { saveRecipe, getSavedRecipes } from "../Data/624API";
+import TokenContext from "../Context/TokenContext";
 
 const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
   const [detailedRecipe, setDetailedRecipe] = useState(null);
+  //get the token from context
+  // const { userToken } = useContext(TokenContext);
+  // alert(userToken);
 
   useEffect(() => {
     if (visible && recipe) {
@@ -69,6 +74,7 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
             <Text style={styles.detailText}>
               Health Score: {detailedRecipe.healthScore}
             </Text>
+
             {/* Ingredients List */}
             {detailedRecipe.extendedIngredients &&
               detailedRecipe.extendedIngredients.length > 0 && (
@@ -102,7 +108,13 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
           </>
         )}
 
-        <Pressable style={styles.button} onPress={onSave}>
+        <Pressable
+          style={styles.button}
+          onPress={async () => {
+            response = await saveRecipe(recipe.id, "");
+            console.log(response);
+          }}
+        >
           <Text style={styles.buttonText}>Save this recipe</Text>
         </Pressable>
         <Pressable style={styles.button} onPress={onClose}>
