@@ -34,20 +34,6 @@ class MyDietaryPreferences extends React.Component {
         
       }
 
-      addToStateArray = (stateToUpdate, value) => {
-        const listOfItems = stateToUpdate;
-        listOfItems.push(value);
-        stateToUpdate = listOfItems;
-        this.forceUpdate()
-      };
-
-      removeFromStateArray = (stateToUpdate, value) => {
-        const listOfItems = stateToUpdate;
-        listOfItems.pop(value);
-        stateToUpdate = listOfItems;
-        this.forceUpdate()
-      };
-
       onInputTextChange = (key, value) => {
         this.setState({ [key]: value })
       }
@@ -114,7 +100,7 @@ class MyDietaryPreferences extends React.Component {
       this.state.excludeIngredients = loadedPreferences.excludeIngredients
 
       this.state.minCalories = loadedPreferences.nutritionPreferences.minCalories + ''
-      this.state.maxCalories = loadedPreferences.nutritionPreferences.minCalories + ''
+      this.state.maxCalories = loadedPreferences.nutritionPreferences.maxCalories + ''
       this.state.minCarbs = loadedPreferences.nutritionPreferences.minCarbs + ''
       this.state.maxCarbs = loadedPreferences.nutritionPreferences.maxCarbs + ''
       this.state.minProtein = loadedPreferences.nutritionPreferences.minProtein + ''
@@ -126,6 +112,8 @@ class MyDietaryPreferences extends React.Component {
       this.state.ignorePantry = loadedPreferences.recipePreferences.ignorePantry
       this.state.sort = loadedPreferences.recipePreferences.sort
       this.state.sortDirection = loadedPreferences.recipePreferences.sortDirection
+
+      this.props.route.params.loadedPreferences = undefined
     }
 
     const allDiets = [
@@ -199,7 +187,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Diets</Text>
             <Picker
               selectedValue={this.state.diets[this.state.diets.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.diets, itemValue)}
+              onValueChange={(itemValue) => this.setState({diets: [...this.state.diets, itemValue]})}
               style={styles.picker}
             >
               {allDiets.map((diet, index) => (
@@ -212,7 +200,9 @@ class MyDietaryPreferences extends React.Component {
                   key={diet.id}
                   item={diet}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.diets, diet.id)}
+                  onPress={() => this.setState({
+                    diets: this.state.diets.filter((x, i) => x !== diet)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{diet}</Text>
                 </TouchableOpacity>
@@ -222,7 +212,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Intolerances</Text>
             <Picker
               selectedValue={this.state.intolerances[this.state.intolerances.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.intolerances, itemValue)}
+              onValueChange={(itemValue) => this.setState({intolerances: [...this.state.intolerances, itemValue]})}
               style={styles.picker}
             >
               {allIntolerances.map((intolerance, index) => (
@@ -235,7 +225,9 @@ class MyDietaryPreferences extends React.Component {
                   key={intolerance.id}
                   item={intolerance}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.intolerances, intolerance.id)}
+                  onPress={() => this.setState({
+                    intolerances: this.state.intolerances.filter((x, i) => x !== intolerance)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{intolerance}</Text>
                 </TouchableOpacity>
@@ -245,7 +237,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Include Cuisines</Text>
             <Picker
               selectedValue={this.state.cuisine[this.state.cuisine.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.cuisine, itemValue)}
+              onValueChange={(itemValue) => this.setState({cuisine: [...this.state.cuisine, itemValue]})}
               style={styles.picker}
             >
               {allCuisines.map((cuisine, index) => (
@@ -258,7 +250,9 @@ class MyDietaryPreferences extends React.Component {
                   key={cuisine.id}
                   item={cuisine}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.cuisine, cuisine.id)}
+                  onPress={() => this.setState({
+                    cuisine: this.state.cuisine.filter((x, i) => x !== cuisine)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{cuisine}</Text>
                 </TouchableOpacity>
@@ -268,7 +262,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Exclude Cuisines</Text>
             <Picker
               selectedValue={this.state.excludeCuisine[this.state.excludeCuisine.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.excludeCuisine, itemValue)}
+              onValueChange={(itemValue) => this.setState({excludeCuisine: [...this.state.excludeCuisine, itemValue]})}
               style={styles.picker}
             >
               {allCuisines.map((cuisine, index) => (
@@ -281,7 +275,9 @@ class MyDietaryPreferences extends React.Component {
                   key={cuisine.id}
                   item={cuisine}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.excludeCuisine, cuisine.id)}
+                  onPress={() => this.setState({
+                    excludeCuisine: this.state.excludeCuisine.filter((x, i) => x !== cuisine)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{cuisine}</Text>
                 </TouchableOpacity>
@@ -291,7 +287,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Equipment</Text>
             <Picker
               selectedValue={this.state.equipment[this.state.equipment.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.equipment, itemValue)}
+              onValueChange={(itemValue) => this.setState({equipment: [...this.state.equipment, itemValue]})}
               style={styles.picker}
             >
               {allEquipment.map((equipment, index) => (
@@ -304,7 +300,9 @@ class MyDietaryPreferences extends React.Component {
                   key={equipment.id}
                   item={equipment}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.equipment, equipment.id)}
+                  onPress={() => this.setState({
+                    equipment: this.state.equipment.filter((x, i) => x !== equipment)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{equipment}</Text>
                 </TouchableOpacity>
@@ -314,7 +312,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Incude Ingredients</Text>
             <Picker
               selectedValue={this.state.includeIngredients[this.state.includeIngredients.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.includeIngredients, itemValue)}
+              onValueChange={(itemValue) => this.setState({includeIngredients: [...this.state.includeIngredients, itemValue]})}
               style={styles.picker}
             >
               {allIngredients.map((ingredient, index) => (
@@ -327,7 +325,9 @@ class MyDietaryPreferences extends React.Component {
                   key={ingredient.id}
                   item={ingredient}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.includeIngredients, ingredient.id)}
+                  onPress={() => this.setState({
+                    includeIngredients: this.state.includeIngredients.filter((x, i) => x !== ingredient)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{ingredient}</Text>
                 </TouchableOpacity>
@@ -337,7 +337,7 @@ class MyDietaryPreferences extends React.Component {
             <Text style={styles.fields}>Exclude Ingredients</Text>
             <Picker
               selectedValue={this.state.excludeIngredients[this.state.excludeIngredients.length - 1]}
-              onValueChange={(itemValue) => this.addToStateArray(this.state.excludeIngredients, itemValue)}
+              onValueChange={(itemValue) => this.setState({excludeIngredients: [...this.state.excludeIngredients, itemValue]})}
               style={styles.picker}
             >
               {allIngredients.map((ingredient, index) => (
@@ -350,7 +350,9 @@ class MyDietaryPreferences extends React.Component {
                   key={ingredient.id}
                   item={ingredient}
                   style={styles.button}
-                  onPress={() => this.removeFromStateArray(this.state.excludeIngredients, ingredient.id)}
+                  onPress={() => this.setState({
+                    excludeIngredients: this.state.excludeIngredients.filter((x, i) => x !== ingredient)}
+                  )}
                 >
                   <Text style={styles.buttonText}>{ingredient}</Text>
                 </TouchableOpacity>

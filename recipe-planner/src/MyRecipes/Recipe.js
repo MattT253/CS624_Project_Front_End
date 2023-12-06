@@ -8,7 +8,10 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
+
+const regex = /(<([^>]+)>)/gi;
 
 class Recipe extends React.Component {
   state = {
@@ -22,7 +25,7 @@ class Recipe extends React.Component {
       },
       () => {
         this.props.navigation.navigate("My Saved Recipes", {
-          deleteRecipe: this,
+          deleteRecipe: this.props.route.params.recipe,
         });
       }
     );
@@ -33,90 +36,79 @@ class Recipe extends React.Component {
     //console.log(recipe)
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView
-          contentContainerStyle={[!recipe.title.length && { flex: 1 }]}
-        >
-          <View
-            style={[
-              styles.itemsContainer,
-              !recipe.title.length && { flex: 1, justifyContent: "center" },
-            ]}
-          >
-            {!recipe.title.length && <Text>No information on this recipe</Text>}
-            {
-              <View style={styles.itemContainer}>
-                <Text style={styles.recipeTitleText}>{recipe.title}</Text>
-                <Text style={[styles.recipeText, { paddingTop: 10 }]}>
-                  {recipe.cuisine}
-                </Text>
-                <Text style={styles.recipeText}>{recipe.type}</Text>
-                <Text
-                  style={[
-                    styles.recipeText,
-                    {
-                      borderBottomColor: "#aabbcc",
-                      borderBottomWidth: 2,
-                      paddingBottom: 10,
-                    },
-                  ]}
-                >
-                  Ready Time: {recipe.readyTime}
-                </Text>
-                <Text style={[styles.recipeText, { paddingTop: 10 }]}>
-                  Calories: {recipe.calories}
-                </Text>
-                <Text style={styles.recipeText}>Carbs (g): {recipe.carbs}</Text>
-                <Text style={styles.recipeText}>
-                  Protein (g): {recipe.protein}
-                </Text>
-                <Text style={styles.recipeText}>Fat (g): {recipe.fat}</Text>
-              </View>
-            }
-
-            <View style={styles.listContainer}>
-              <Text
-                style={[
-                  styles.recipeText,
-                  { paddingTop: 10, paddingBottom: 10 },
-                ]}
-              >
-                Ingredients:
-              </Text>
-              {recipe.ingredients.map((item, index) => (
-                <Text style={styles.listText}>{item}</Text>
-              ))}
-            </View>
-
-            <View style={styles.listContainer}>
-              <Text
-                style={[
-                  styles.recipeText,
-                  { paddingTop: 10, paddingBottom: 10 },
-                ]}
-              >
-                Equipment:
-              </Text>
-              {recipe.equipment.map((item, index) => (
-                <Text style={styles.listText}>{item}</Text>
-              ))}
-            </View>
-
-            <View style={styles.listContainer}>
-              <Text
-                style={[
-                  styles.recipeText,
-                  { paddingTop: 10, paddingBottom: 10 },
-                ]}
-              >
-                Instructions:
-              </Text>
-              {recipe.instructions.map((item, index) => (
-                <Text style={styles.listText}>{item}</Text>
-              ))}
-            </View>
-
-            <View style={styles.itemContainer}></View>
+        <ScrollView contentContainerStyle={[!recipe.title.length && { flex: 1 }]}>
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.foodImage}
+              source={{uri: recipe.image}}
+            />
           </View>
+          <View style={styles.container}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleText}>{recipe.title}</Text>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionHeader}>Cuisines:</Text>
+
+              {recipe.cuisines.length == 0 
+                ? <Text style={styles.listText}>Not available</Text>
+                : recipe.cuisines.map((item, index) => (
+                  <Text style={styles.listText}>{item}</Text>
+              ))}
+
+              <Text style={styles.sectionHeader}>Dish Type:</Text>
+
+              {recipe.dishTypes.length == 0 
+                ? <Text style={styles.listText}>Not available</Text>
+                : recipe.dishTypes.map((item, index) => (
+                  <Text style={styles.listText}>{item}</Text>
+              ))}
+
+              <Text style={styles.sectionHeader}>Ready Time:</Text>
+
+              <Text style={styles.recipeText}>
+                {recipe.readyInMinutes} Minutes
+              </Text>
+
+              <Text style={styles.sectionHeader}>Servings:</Text>
+                
+              <Text style={styles.recipeText}>
+                {recipe.servings}
+              </Text>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionHeader}>Summary:</Text>
+                
+              <Text style={styles.listText}>
+                {recipe.summary.replace(regex, "")}
+              </Text>
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionHeader}>Ingredients:</Text>
+
+              {recipe.extendedIngredients.length == 0 
+                ? <Text style={styles.listText}>Not available</Text>
+                : recipe.extendedIngredients.map((item, index) => (
+                  <Text style={styles.listText}>({item.amount}) {item.unit} -- {item.name}</Text>
+              ))}
+            </View>
+
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionHeader}>Instructions:</Text>
+
+              {recipe.analyzedInstructions.length == 0 
+                ? <Text style={styles.listText}>Not available</Text>
+                : recipe.analyzedInstructions.map((item, index) => (
+                    item.steps.map((buriedItem, index) => (
+                      <Text style={styles.listText}>({buriedItem.number}) -- {buriedItem.step}</Text>
+              ))))}
+            </View>
+
+          </View>
+
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this.deleteRecipe}>
@@ -130,9 +122,56 @@ class Recipe extends React.Component {
   }
 }
 
+//  render() {
+//    const { recipe } = this.props.route.params;
+//    //console.log(recipe)
+//    return (
+//      <View style={{ flex: 1 }}>
+//        
+//        <View style={styles.buttonContainer}>
+//          <TouchableOpacity onPress={this.deleteRecipe}>
+//            <View style={styles.button}>
+//              <Text style={styles.buttonText}>Delete Recipe</Text>
+//            </View>
+//          </TouchableOpacity>
+//        </View>
+//      </View>
+//    );
+//  }
+//}
+
 const styles = StyleSheet.create({
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 35,
+    borderBottomColor: "#7777cc",
+    borderBottomWidth: 2,
+  },
+  sectionHeader: {
+    fontSize: 25,
+    paddingTop: 15,
+  },
+  recipeText: {
+    fontSize: 20,
+  },
+  listText: {
+    fontSize: 16,
+  },
   container: {
-    flex: 1,
+    padding: 20,
+    paddingBottom: 60,
+    borderBottomColor: "#aabbcc",
+    borderBottomWidth: 2,
+  },
+  titleContainer: {
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  sectionContainer: {
+    padding: 10,
+    borderBottomColor: "#aabbcc",
+    borderBottomWidth: 2,
   },
   itemsContainer: {
     paddingBottom: 104,
@@ -144,6 +183,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomColor: "#aabbcc",
     borderBottomWidth: 2,
+  },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContainer: {
     position: "absolute",
@@ -160,25 +203,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
   },
-  itemContainer: {
-    padding: 20,
-    borderBottomColor: "#aabbcc",
-    borderBottomWidth: 2,
-    justifyContent: "center",
-  },
-  recipeTitleText: {
-    fontWeight: "bold",
-    fontSize: 25,
-    padding: 10,
+  foodImage: {
     alignItems: "center",
-    borderBottomColor: "#7777cc",
-    borderBottomWidth: 2,
-  },
-  recipeText: {
-    fontSize: 18,
-  },
-  listText: {
-    fontSize: 14,
+    justifyContent: "center",
+    width: 400,
+    height: 200,
   },
 });
 

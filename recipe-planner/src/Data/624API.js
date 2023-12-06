@@ -48,11 +48,38 @@ async function saveRecipe(recipeId, token) {
     console.log(json);
     return json;
   } catch (error) {
-    console.error("Could save recipe", error);
+    console.error("Could not save recipe", error);
   }
+}
+
+async function deleteRecipe(recipeId, token) {
+  if (!token) {
+    token = HardCode_Token;
+  }
+  const url = `${API_URL}recipes`;
+  const options = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ id: recipeId }),
+  };
+
+//   try {
+//     console.log(`Delete Recipe: ${token}`);
+//     console.log(url);
+//      response = await fetch(url, options);
+//      json = await response.json();
+//     console.log(json);
+//     return json;
+//   } catch (error) {
+//     console.error("Could not delete recipe", error);
+//   }
 }
 
 module.exports = {
   getSavedRecipes,
   saveRecipe,
+  deleteRecipe,
 };

@@ -6,11 +6,11 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import { getSavedRecipes } from "../Data/624API";
+import { getSavedRecipes, deleteRecipe } from "../Data/624API";
 import { getRecipeDetails } from "../Data/Spoonacular";
 import uuidV4 from "uuid/v4";
 
-const MyRecipes = ({ navigation }) => {
+const MyRecipes = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [myRecipes, setMyRecipes] = useState([]);
 
@@ -43,6 +43,24 @@ const MyRecipes = ({ navigation }) => {
         <Text style={styles.fields}>Loading...</Text>
       </View>
     );
+  }
+  
+  if (route.params.deleteRecipe !== undefined) {
+    // console.log('----------------------------------------------------')
+    // console.log(route.params.deleteRecipe.id)
+    const recipe = route.params.deleteRecipe
+    route.params.deleteRecipe = undefined
+
+
+    // This will update the local storage for rendering immediately so we dont have to wait on the
+    // back end for a response in order to get a proper render
+    setMyRecipes(myRecipes.filter((x, i) => x !== recipe))
+
+    async () => {
+      response = await deleteRecipe(recipe.id, "");
+      console.log(response);
+      console.log("Deleted recipe", recipe.id);
+    }
   }
 
   return (

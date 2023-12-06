@@ -64,21 +64,21 @@ class LoginScreen extends React.Component {
     // This should also request the user's stored recipes and dietary preferences from the back end and store them in the appropriate states.
 
     // Get dietary preferences from the back end
-    // try {
-    //   console.log(`Dietary Preferences: ${this.token}`);
-    //   console.log(this.props.route.params.path);
-    //   response = await fetch(this.props.route.params.path + "users", {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: "Bearer " + this.token,
-    //     },
-    //   });
-    //   json = await response.json();
-    //   this.preferences = json.preferences;
-    // } catch (error) {
-    //   console.error("Could not load dietary preferences", error);
-    // }
+    try {
+      console.log(`Dietary Preferences: ${this.token}`);
+      console.log(this.props.route.params.path);
+      response = await fetch(this.props.route.params.path + "users", {
+        method: "GET",
+        headers: {
+         "Content-Type": "application/json",
+          Authorization: "Bearer " + this.token,
+        },
+      });
+      json = await response.json();
+      this.preferences = json.preferences;
+    } catch (error) {
+      console.error("Could not load dietary preferences", error);
+    }
 
     // Get saved recipes from the back end
 
@@ -100,24 +100,29 @@ class LoginScreen extends React.Component {
     //   console.error("Could not load saved recipes", error);
     // }
 
-    // //Erase password entry
-    // this.setState(
-    //   {
-    //     password: "",
-    //   },
-    //   () => {
-    //     // Send the preferences data to the My Dietary Preferences tab to be stored in the states there
-    //     this.props.navigation.navigate("My Dietary Preferences", {
-    //       loadedPreferences: this.preferences,
-    //     });
+    //Erase password entry
+    this.setState(
+      {
+        password: "",
+      },
+      () => {
+        // Send the preferences data to the My Dietary Preferences tab to be stored in the states there
+        this.props.navigation.navigate("My Dietary Preferences", {
+          loadedPreferences: this.preferences,
+        });
+
+        // Redirect back to login after using the data on the my preferences screen
+        this.props.navigation.navigate("Log in"
+        );
 
     //     // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
     //     this.props.navigation.navigate("My Recipes", {
     //       screen: "My Saved Recipes",
+    //       params: { loadedRecipe: '' },
     //       params: { loadedRecipes: this.savedRecipes },
     //     });
-    //   }
-    // );
+       }
+     );
   };
 
   render() {
