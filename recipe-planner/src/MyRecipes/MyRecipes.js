@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   ScrollView,
@@ -8,16 +8,18 @@ import {
 } from "react-native";
 import { getSavedRecipes, deleteRecipe } from "../Data/624API";
 import { getRecipeDetails } from "../Data/Spoonacular";
+import TokenContext from "../Context/TokenContext";
 import uuidV4 from "uuid/v4";
 
 const MyRecipes = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [myRecipes, setMyRecipes] = useState([]);
-
+  const { userToken } = useContext(TokenContext)
+  
   useEffect(() => {
     async function loadAllRecipes() {
       try {
-        const savedRecipeIds = await getSavedRecipes();
+        const savedRecipeIds = await getSavedRecipes(userToken);
         console.log("Fetched saved recipe IDs:", savedRecipeIds);
 
         if (savedRecipeIds.savedRecipes.length > 0) {
@@ -57,7 +59,7 @@ const MyRecipes = ({ navigation, route }) => {
     setMyRecipes(myRecipes.filter((x, i) => x !== recipe))
 
     async () => {
-      response = await deleteRecipe(recipe.id, "");
+      response = await deleteRecipe(recipe.id, userToken);
       console.log(response);
       console.log("Deleted recipe", recipe.id);
     }

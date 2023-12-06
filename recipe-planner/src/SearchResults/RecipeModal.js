@@ -15,8 +15,8 @@ import TokenContext from "../Context/TokenContext";
 
 const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
   const [detailedRecipe, setDetailedRecipe] = useState(null);
-  //get the token from context
-  // const { userToken } = useContext(TokenContext);
+  // get the token from context
+  const { userToken } = useContext(TokenContext);
   // alert(userToken);
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            response = await saveRecipe(recipe.id, "");
+            response = await saveRecipe(recipe.id, userToken);
             console.log(response);
           }}
         >

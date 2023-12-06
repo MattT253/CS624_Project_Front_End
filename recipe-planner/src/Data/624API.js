@@ -1,6 +1,6 @@
 const API_URL = "https://624api.azurewebsites.net/";
-const HardCode_Token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjdiYzQwMjhiMzU5MmM0NTc2MjM4ZiIsImlhdCI6MTcwMTc1NTE5MSwiZXhwIjoxNzA0MzQ3MTkxfQ.lpFH8PtGWyu8NDlFayiWbJxravbtlTpack7wezsgCBE";
+const HardCode_Token = ""
+//  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NjdiYzQwMjhiMzU5MmM0NTc2MjM4ZiIsImlhdCI6MTcwMTc1NTE5MSwiZXhwIjoxNzA0MzQ3MTkxfQ.lpFH8PtGWyu8NDlFayiWbJxravbtlTpack7wezsgCBE";
 async function getSavedRecipes(token) {
   if (!token) {
     token = HardCode_Token;

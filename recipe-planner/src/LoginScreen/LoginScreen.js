@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Pressable,
+  Alert
 } from "react-native";
 import uuidV4 from "uuid/v4";
 import TokenContext from "../Context/TokenContext";
@@ -125,6 +126,46 @@ class LoginScreen extends React.Component {
      );
   };
 
+  register = async () => {
+    if (this.state.userName === '' || this.state.password === '') {
+      Alert.alert('Enter Required Fields', 'Enter an email and password to register as a new user')
+    } else{
+
+      try {
+        var response = await fetch(this.props.route.params.path + "users/register", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            // email: "test@test.com",
+            // password: "1234!@#$",
+            email: this.state.userName,
+            password: this.state.password,
+          }),
+        });
+        var json = await response.json();
+        console.log(json);
+
+        // The userToken state is stored in the App.js file and passed to each screen, set it here on login
+        //this.props.route.params.setToken(json.token);
+        //var token = json.token;
+
+        // Set token using context
+        //This does not happen immediately so if we are going to use
+        //this token in other calls in this component we need another
+        //copy
+        this.context.setToken(json.token);
+        this.token = json.token;
+
+        console.log(this.props.route.params);
+      } catch (error) {
+        console.error("Could not login", error);
+      }
+    }
+  };
+
   render() {
     if (this.context.userToken) {
       return (
@@ -142,7 +183,7 @@ class LoginScreen extends React.Component {
       <View style={styles.container}>
         <Text style={styles.fields}>User name</Text>
         <TextInput
-          placeholder=""
+          placeholder="123abc@example.com"
           onChangeText={(val) => this.onInputTextChange("userName", val)}
           style={styles.input}
         />
@@ -155,6 +196,11 @@ class LoginScreen extends React.Component {
         <TouchableOpacity onPress={() => this.login()}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.register()}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>Register New Account</Text>
           </View>
         </TouchableOpacity>
       </View>
