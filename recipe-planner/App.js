@@ -18,6 +18,7 @@ import { LogBox } from "react-native";
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
   'Each child in a list should have a unique "key" prop',
+  'Possible Unhandled Promise Rejection',
 ]);
 
 // Import screens from custom class components
@@ -129,8 +130,7 @@ class App extends React.Component {
               name="Search Results"
               component={SearchResults}
               initialParams={{
-                saveToMyRecipes: this.saveToMyRecipes,
-                searchedRecipes: this.state.searchedRecipes,
+                filler: '',
               }}
             />
             <Tabs.Screen

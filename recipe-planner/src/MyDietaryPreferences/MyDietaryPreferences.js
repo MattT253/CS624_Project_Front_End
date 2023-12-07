@@ -99,21 +99,86 @@ class MyDietaryPreferences extends React.Component {
       this.state.includeIngredients = loadedPreferences.includeIngredients
       this.state.excludeIngredients = loadedPreferences.excludeIngredients
 
-      this.state.minCalories = loadedPreferences.nutritionPreferences.minCalories + ''
-      this.state.maxCalories = loadedPreferences.nutritionPreferences.maxCalories + ''
-      this.state.minCarbs = loadedPreferences.nutritionPreferences.minCarbs + ''
-      this.state.maxCarbs = loadedPreferences.nutritionPreferences.maxCarbs + ''
-      this.state.minProtein = loadedPreferences.nutritionPreferences.minProtein + ''
-      this.state.maxProtein = loadedPreferences.nutritionPreferences.maxProtein + ''
-      this.state.minFat = loadedPreferences.nutritionPreferences.minFat + ''
-      this.state.maxFat = loadedPreferences.nutritionPreferences.maxFat + ''
+      if (loadedPreferences.nutritionPreferences.minCalories == null) {
+        this.state.minCalories = ''
+      } else {
+        this.state.minCalories = loadedPreferences.nutritionPreferences.minCalories + ''
+      }
+      if (loadedPreferences.nutritionPreferences.maxCalories == null) {
+        this.state.maxCalories = ''
+      } else {
+        this.state.maxCalories = loadedPreferences.nutritionPreferences.maxCalories + ''
+      }
+      if (loadedPreferences.nutritionPreferences.minCarbs == null) {
+        this.state.minCarbs = ''
+      } else {
+        this.state.minCarbs = loadedPreferences.nutritionPreferences.minCarbs + ''
+      }
+      if (loadedPreferences.nutritionPreferences.maxCarbs == null) {
+        this.state.maxCarbs = ''
+      } else {
+        this.state.maxCarbs = loadedPreferences.nutritionPreferences.minProtein + ''
+      }
+      if (loadedPreferences.nutritionPreferences.maxCarbs == null) {
+        this.state.minProtein = ''
+      } else {
+        this.state.minProtein = loadedPreferences.nutritionPreferences.minProtein + ''
+      }
+      if (loadedPreferences.nutritionPreferences.maxProtein == null) {
+        this.state.maxProtein = ''
+      } else {
+        this.state.maxProtein = loadedPreferences.nutritionPreferences.maxProtein + ''
+      }
+      if (loadedPreferences.nutritionPreferences.minFat == null) {
+        this.state.minFat = ''
+      } else {
+        this.state.minFat = loadedPreferences.nutritionPreferences.minFat + ''
+      }
+      if (loadedPreferences.nutritionPreferences.maxFat == null) {
+        this.state.maxFat = ''
+      } else {
+        this.state.maxFat = loadedPreferences.nutritionPreferences.maxFat + ''
+      }
 
-      this.state.maxReadyTime = loadedPreferences.recipePreferences.maxReadyTime + ''
+
+      if (loadedPreferences.recipePreferences.maxReadyTime == null) {
+        this.state.maxReadyTime = ''
+      } else {
+        this.state.maxReadyTime = loadedPreferences.recipePreferences.maxReadyTime + ''
+      }
       this.state.ignorePantry = loadedPreferences.recipePreferences.ignorePantry
       this.state.sort = loadedPreferences.recipePreferences.sort
-      this.state.sortDirection = loadedPreferences.recipePreferences.sortDirection
+      this.setState({sortDirection: loadedPreferences.recipePreferences.sortDirection})
 
       this.props.route.params.loadedPreferences = undefined
+    }
+
+    // Clear preferences after logout
+    if (this.props.route.params.clearData !== undefined) {
+      this.props.route.params.clearData = undefined
+
+      console.log('in preferences clear data')
+      this.state.diets = []
+      this.state.intolerances = []
+      this.state.cuisine = []
+      this.state.excludeCuisine = []
+      this.state.equipment = []
+      this.state.includeIngredients = []
+      this.state.excludeIngredients = []
+
+      this.state.minCalories = ''
+      this.state.maxCalories = ''
+      this.state.minCarbs = ''
+      this.state.maxCarbs = ''
+      this.state.minProtein = ''
+      this.state.maxProtein = ''
+      this.state.minFat = ''
+      this.state.maxFat = ''
+
+      this.state.maxReadyTime = ''
+      this.state.ignorePantry = false
+      this.state.sort = 'time'
+      this.setState({sortDirection: 'asc'})
     }
 
     const allDiets = [
@@ -154,6 +219,7 @@ class MyDietaryPreferences extends React.Component {
       "thai",
       "indian",
       "french",
+      "greek",
     ];
     const allEquipment = [
       "none",

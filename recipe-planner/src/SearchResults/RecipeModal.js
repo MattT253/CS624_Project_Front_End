@@ -13,7 +13,7 @@ import { getRecipeDetails } from "../Data/Spoonacular";
 import { saveRecipe, getSavedRecipes } from "../Data/624API";
 import TokenContext from "../Context/TokenContext";
 
-const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
+const RecipeModal = ({ recipe, visible, onClose, onSave, navigation }) => {
   const [detailedRecipe, setDetailedRecipe] = useState(null);
   // get the token from context
   const { userToken } = useContext(TokenContext);
@@ -111,8 +111,18 @@ const RecipeModal = ({ recipe, visible, onClose, onSave }) => {
         <Pressable
           style={styles.button}
           onPress={async () => {
-            response = await saveRecipe(recipe.id, userToken);
-            console.log(response);
+            onClose()
+            navigation.navigate('My Recipes', {
+              screen: "My Saved Recipes",
+              params: { newRecipeId: recipe.id},
+              params: { newRecipeId: recipe.id}
+            })
+            try{
+              response = await saveRecipe(recipe.id, userToken);
+              console.log(response);
+            } catch (error) {
+              console.error("Error trying to save recipe", error)
+            }
           }}
         >
           <Text style={styles.buttonText}>Save this recipe</Text>

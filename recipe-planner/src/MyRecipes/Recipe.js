@@ -122,24 +122,6 @@ class Recipe extends React.Component {
   }
 }
 
-//  render() {
-//    const { recipe } = this.props.route.params;
-//    //console.log(recipe)
-//    return (
-//      <View style={{ flex: 1 }}>
-//        
-//        <View style={styles.buttonContainer}>
-//          <TouchableOpacity onPress={this.deleteRecipe}>
-//            <View style={styles.button}>
-//              <Text style={styles.buttonText}>Delete Recipe</Text>
-//            </View>
-//          </TouchableOpacity>
-//        </View>
-//      </View>
-//    );
-//  }
-//}
-
 const styles = StyleSheet.create({
   titleText: {
     fontWeight: "bold",

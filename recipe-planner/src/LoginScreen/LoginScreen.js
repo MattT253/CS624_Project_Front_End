@@ -10,6 +10,7 @@ import {
   Alert
 } from "react-native";
 import uuidV4 from "uuid/v4";
+import { getSavedRecipes } from "../Data/624API";
 import TokenContext from "../Context/TokenContext";
 
 class LoginScreen extends React.Component {
@@ -19,7 +20,7 @@ class LoginScreen extends React.Component {
     password: "",
     token: "",
     preferences: [],
-    savedRecipes: [],
+    savedRecipeIds: [],
   };
 
   onInputTextChange = (key, value) => {
@@ -83,6 +84,15 @@ class LoginScreen extends React.Component {
 
     // Get saved recipes from the back end
 
+    try {
+      let response = await getSavedRecipes(this.token);
+      console.log("Fetched saved recipe IDs:", response);
+      this.savedRecipeIds = response;
+      
+    } catch (error) {
+      console.error("Error loading recipes:", error);
+    }
+
     // try {
     //   console.log(`Recipes: ${this.token}`);
     //   console.log(this.props.route.params.path + "recipes");
@@ -112,16 +122,16 @@ class LoginScreen extends React.Component {
           loadedPreferences: this.preferences,
         });
 
-        // Redirect back to login after using the data on the my preferences screen
-        this.props.navigation.navigate("Log in"
-        );
+        // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
+        this.props.navigation.navigate("My Recipes", {
+          screen: "My Saved Recipes",
+          params: { loadedRecipe: '' },
+          params: { loadedRecipes: this.savedRecipeIds },
+        });
 
-    //     // Send the recipe data to the My Recipes tab to be stored there, also navigate to the recipes tab
-    //     this.props.navigation.navigate("My Recipes", {
-    //       screen: "My Saved Recipes",
-    //       params: { loadedRecipe: '' },
-    //       params: { loadedRecipes: this.savedRecipes },
-    //     });
+        // Redirect back to login after using the data on the my preferences screen
+        this.props.navigation.navigate("Log in");
+
        }
      );
   };
@@ -169,9 +179,20 @@ class LoginScreen extends React.Component {
   render() {
     if (this.context.userToken) {
       return (
-        <View>
-          <Text>You are already logged in</Text>
-          <TouchableOpacity onPress={() => this.logout()}>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontSize: 20, margin: 20}}>You are already logged in</Text>
+          <TouchableOpacity style={{width:'80%'}} onPress={() => {
+            this.logout()
+            this.props.navigation.navigate("My Recipes", {
+              screen: "My Saved Recipes",
+              params: { clearData: true },
+              params: { clearData: true },
+            });
+            this.props.navigation.navigate("My Dietary Preferences", {
+              clearData: true,
+            });
+            this.props.navigation.navigate("Log in");
+          }}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>
             </View>

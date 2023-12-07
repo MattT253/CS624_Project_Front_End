@@ -45,6 +45,7 @@ const SearchResults = ({ navigation, route }) => {
         columnWrapperStyle={styles.row}
       />
       <RecipeModal
+        navigation={navigation}
         recipe={selectedRecipe}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
